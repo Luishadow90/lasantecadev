@@ -7,7 +7,7 @@
 - Accesibilidad: skip‑link, landmarks, foco visible, contraste AA.
 - SEO/Perf: OG tags, JSON‑LD, manifest, robots + sitemap. web.config con compresión y cache estática.
 
-## Pasos
+## Pasos     
 1) Copiar carpeta al servidor IIS (p.ej. `C:\inetpub\wwwroot\lasante`).  
 2) Crear sitio y binding HTTPS con certificado SSL.  
 3) Subir **Nexa-Bold.woff2** y **Nexa-Regular.woff2** a `assets/fonts/`.  
