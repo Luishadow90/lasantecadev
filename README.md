@@ -1,43 +1,106 @@
-# La Santé — PRO Starter (Mobile‑first, UX/UI fino)
-**Stack:** HTML + CSS (Nexa) + JS vanilla + SQL schema (SQL Server).  
-**Brand:** Pantone 2748C (#001A70) y 1235C (#E5A823).
+# La Santé – Web Platform (Frontend)
 
-## Diferenciales UX/UI
-- Mobile‑first real, layout grid limpio, componentes reutilizables (cards, badges, CTAs).
-- Accesibilidad: skip‑link, landmarks, foco visible, contraste AA.
-- SEO/Perf: OG tags, JSON‑LD, manifest, robots + sitemap. web.config con compresión y cache estática.
+This repository contains the frontend development for **La Santé Web Platform**, focused on UI/UX validation, modular frontend architecture, and early-stage functional navigation prior to production.
 
-## Pasos     
-1) Copiar carpeta al servidor IIS (p.ej. `C:\inetpub\wwwroot\lasante`).  
-2) Crear sitio y binding HTTPS con certificado SSL.  
-3) Subir **Nexa-Bold.woff2** y **Nexa-Regular.woff2** a `assets/fonts/`.  
-4) Actualizar subdominios de Farmacovigilancia, Plan y Login.
+The project is currently in **Phase 1**, intended for stakeholder review, validation, and iterative feedback before backend integration and production deployment.
 
-## Fase 2
-- Conectar formularios a backend + SQL (`sql/schema.sql`).  
-- Portafolio real desde BD/API o CMS.  
-- ATS o Google Sheets para vacantes.
+---
 
-## Admin (Roles: Administrador / EditorNoticias / EditorVacantes)
-Incluye un scaffold **ASP.NET Core (.NET 8)** para un Panel Admin con roles:
-- **Administrador**: acceso total
-- **EditorNoticias**: publicar en Noticias (imágenes + textos)
-- **EditorVacantes**: publicar en Trabaja con Nosotros (imágenes + textos)
+## 🌐 Live Preview
 
-Ruta: `server-dotnet/LasanteAdminApi`
-- Ejecutar local: `dotnet run`
-- Login: `/admin/login`
-- Seeds (demo): `sql/seed-users.sql`
+A live, navigable version of the frontend is available at:
 
-> Nota: los permisos por rol ya están configurados; en fase 2 conectamos CRUD real a SQL Server y render público dinámico.
+🔗 https://jazzy-eclair-3f9c2a.netlify.app/
 
-## SQL Server (DB + usuarios demo)
-Scripts:
-- `sql/schema.sql` (tablas)
-- `sql/seed-users.sql` (usuarios demo)
-- `sql/seed-content.sql` (contenido demo publicado)
+This version replaces static demos or videos and allows direct exploration of the user experience.
 
-Usuarios demo:
-- **Administrador**: admin@lasante.local / **Admin123!**
-- **EditorNoticias**: news@lasante.local / **News123!**
-- **EditorVacantes**: jobs@lasante.local / **Jobs123!**
+---
+
+## 🎯 Project Objectives
+
+- Validate UI/UX and overall site structure
+- Enable stakeholders to navigate and review the frontend
+- Establish a scalable, modular frontend foundation
+- Prepare the project for content integration and production readiness
+
+---
+
+## 🧩 Scope (Phase 1)
+
+- Global site navigation
+- Modular page structure
+- Responsive behavior (desktop & mobile)
+- Visual design system and layout
+- Static content placeholders
+- Frontend-only implementation (no backend logic)
+
+---
+
+## 🗂 Main Sections
+
+- Home
+- Portfolio
+- Pharmacovigilance
+- News
+- Careers
+- Corporate / Informational pages
+
+---
+
+## 🛠 Tech Stack
+
+**Frontend**
+- HTML5
+- CSS3 (modular styles)
+- JavaScript (vanilla)
+- Responsive design (mobile-first)
+
+**Version Control & Hosting**
+- Git & GitHub
+- Branch-based development workflow
+- Netlify (static hosting & preview environment)
+
+---
+
+## 🧱 Project Structure (Simplified)
+
+
+---
+
+## 🔄 Development Workflow
+
+- `main` → Stable integration branch
+- Feature and environment-specific branches used for parallel development
+- Changes are merged via Pull Requests once validated
+
+---
+
+## 🚀 Deployment
+
+- Automatically deployed via Netlify
+- Manual deploys enabled during early stages
+- Production pipeline will be defined after Phase 1 approval
+
+---
+
+## 📌 Next Steps (Pending Validation)
+
+- Product catalog definition
+- Country-based product distribution
+- Content guidelines and minimal copy
+- Legal and regulatory inputs
+- Backend and CMS integration
+
+---
+
+## 👤 Maintainer
+
+**Luis Hernández**  
+Frontend & Digital Strategy  
+GitHub: https://github.com/Luishadow90
+
+---
+
+## 📄 License
+
+Private project. All rights reserved.
