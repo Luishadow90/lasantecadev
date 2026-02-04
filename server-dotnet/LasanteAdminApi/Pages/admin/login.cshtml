@@ -1,0 +1,40 @@
+@page "/admin/login"
+@{
+  Layout = null;
+  var error = Request.Query["error"].ToString() == "1";
+}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Admin La Santé</title>
+  <link rel="stylesheet" href="/assets/css/brand.css" />
+  <style>
+    .wrap{min-height:100vh;display:grid;place-items:center;padding:16px;background:radial-gradient(900px 250px at 50% -90px,#fef9ee 20%,#ffffff 60%)}
+    .panel{max-width:420px;width:100%}
+    input{width:100%;padding:.7rem;border:1px solid var(--border);border-radius:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel card">
+      <div class="p">
+        <div class="kicker">La Santé</div>
+        <h1 style="margin:.2rem 0 .4rem">Acceso al Administrador</h1>
+        <p style="margin:0;color:var(--muted-2)">Ingresa con tu usuario autorizado.</p>
+        @if (error)
+        {
+          <p style="margin-top:10px;color:#b42318;font-weight:700">Credenciales incorrectas.</p>
+        }
+      </div>
+      <form method="post" action="/admin/auth/login" class="p" style="padding-top:0">
+        <label>Email<br><input type="email" name="email" required autocomplete="email"></label><br><br>
+        <label>Contraseña<br><input type="password" name="password" required autocomplete="current-password"></label><br><br>
+        <button class="btn primary" type="submit" style="width:100%">Entrar</button>
+        <p style="margin:12px 0 0;color:var(--muted-2);font-size:.9rem">Demo: valida contra la tabla <b>Users</b> (hash SHA-256).</p>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

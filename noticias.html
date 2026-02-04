@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Noticias — La Santé</title>
+    <meta name="description" content="Actualidad y comunicados" />
+
+    <link rel="preload" href="/assets/fonts/Nexa-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/Nexa-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+    <link rel="stylesheet" href="assets/css/brand.css" />
+    <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
+
+    <meta property="og:title" content="Noticias — La Santé" />
+    <meta property="og:description" content="Actualidad y comunicados" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/img/hero-1.svg" />
+    <meta name="theme-color" content="#E5A823" />
+    <link rel="manifest" href="site.webmanifest" />
+  </head>
+
+  <body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
+    <!-- Site Header (INJECTED by assets/js/layout.js) -->
+    <div id="site-header"></div>
+
+    <main id="main" tabindex="-1">
+      <section class="section">
+        <div class="container">
+          <div class="section-header" style="align-items:flex-end; gap:12px;">
+            <div>
+              <div class="kicker">Actualidad</div>
+              <h2>Noticias</h2>
+              <p class="muted mt-1" style="max-width: 75ch;">
+                Demo tipo blog: cards con imagen, título, autor, fecha, categorías y tags. En Fase 2–3 esto se llenará desde Admin (CRUD) y API.
+              </p>
+            </div>
+
+            <div class="news-filters">
+              <label class="sr-only" for="news-q">Buscar</label>
+              <input id="news-q" class="input" type="search" placeholder="Buscar noticia…" />
+              <select id="news-category" class="select">
+                <option value="">Todas las categorías</option>
+              </select>
+              <button id="btnDemoPublish" class="btn ghost" type="button" title="Demo (localStorage)">
+                + Publicar (demo)
+              </button>
+            </div>
+          </div>
+
+          <div id="news-grid" class="grid cols-3"></div>
+        </div>
+      </section>
+
+      <!-- Modal: lectura -->
+      <div class="modal" id="postModal" aria-hidden="true" role="dialog" aria-labelledby="postTitle">
+        <div class="modal__backdrop" data-close-modal></div>
+        <div class="modal__panel modal__panel--wide" role="document">
+          <div class="modal__header">
+            <div>
+              <div class="kicker" id="postKicker">Noticia</div>
+              <h3 id="postTitle" class="m0"></h3>
+              <p class="muted mt-1" id="postMeta"></p>
+              <div class="chips mt-1" id="postChips"></div>
+            </div>
+            <button class="btn ghost" type="button" data-close-modal aria-label="Cerrar">✕</button>
+          </div>
+
+          <div class="modal__body">
+            <img id="postImg" class="post-cover" alt="" />
+            <div id="postContent" class="prose mt-2"></div>
+          </div>
+
+          <div class="modal__footer">
+            <button type="button" class="btn ghost" data-close-modal>Cerrar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal: publicar demo -->
+      <div class="modal" id="publishModal" aria-hidden="true" role="dialog" aria-labelledby="publishTitle">
+        <div class="modal__backdrop" data-close-modal></div>
+        <div class="modal__panel modal__panel--wide" role="document">
+          <div class="modal__header">
+            <div>
+              <div class="kicker">Demo</div>
+              <h3 id="publishTitle" class="m0">Publicar noticia (demo)</h3>
+              <p class="muted mt-1">
+                Esto simula el futuro Admin CRUD. Guarda en <code>localStorage</code> y aparece en el listado.
+              </p>
+            </div>
+            <button class="btn ghost" type="button" data-close-modal aria-label="Cerrar">✕</button>
+          </div>
+
+          <form id="publishForm" class="modal__body">
+            <div class="form-grid">
+              <div class="field span-2">
+                <label for="pTitle">Título *</label>
+                <input id="pTitle" class="input" required />
+              </div>
+
+              <div class="field">
+                <label for="pAuthor">Autor *</label>
+                <input id="pAuthor" class="input" required />
+              </div>
+
+              <div class="field">
+                <label for="pDate">Fecha *</label>
+                <input id="pDate" class="input" type="date" required />
+              </div>
+
+              <div class="field">
+                <label for="pCategory">Categoría *</label>
+                <input id="pCategory" class="input" placeholder="Ej. Innovación" required />
+              </div>
+
+              <div class="field">
+                <label for="pTags">Tags (separados por coma)</label>
+                <input id="pTags" class="input" placeholder="Ej. farmacia, calidad, guatemala" />
+              </div>
+
+              <div class="field span-2">
+                <label for="pExcerpt">Extracto *</label>
+                <textarea id="pExcerpt" class="textarea" rows="3" required></textarea>
+              </div>
+
+              <div class="field span-2">
+                <label for="pImage">Imagen (URL o ruta local)</label>
+                <input id="pImage" class="input" placeholder="assets/img/hero-1.svg" />
+                <small class="muted">Demo: usa rutas tipo <code>assets/img/…</code> o una URL pública.</small>
+              </div>
+
+              <div class="field span-2">
+                <label for="pContent">Contenido (HTML simple) *</label>
+                <textarea
+                  id="pContent"
+                  class="textarea"
+                  rows="10"
+                  required
+                  placeholder="<p>Contenido…</p><h4>Subtítulo</h4><ul><li>…</li></ul>"
+                ></textarea>
+              </div>
+            </div>
+
+            <p id="publishOk" class="notice ok" hidden>✅ Publicado (demo). Ya aparece en el listado.</p>
+
+            <div class="modal__footer">
+              <button type="button" class="btn ghost" data-close-modal>Cancelar</button>
+              <button type="submit" class="btn primary">Publicar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+      <div class="container cols">
+        <div>
+          <h3 class="m0">La Santé</h3>
+          <p class="mt-1">Salud y vida para más personas.</p>
+          <div class="mt-2">
+            <a class="btn secondary" href="portafolio.html">Ver portafolio</a>
+          </div>
+        </div>
+        <div>
+          <h4>Portafolio</h4>
+          <ul>
+            <li><a href="portafolio.html#categorias">Por categorías</a></li>
+            <li><a href="portafolio.html#moleculas">Por molécula</a></li>
+            <li><a href="portafolio.html#catalogo">Catálogo</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacidad.html">Política de Privacidad</a></li>
+            <li><a href="terminos.html">Términos y Condiciones</a></li>
+            <li><a href="cookies.html">Política de Cookies</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Síguenos</h4>
+          <p><a href="#">Facebook</a> · <a href="#">LinkedIn</a> · <a href="#">YouTube</a></p>
+        </div>
+      </div>
+      <div class="container">
+        <small>© 2026 La Santé. Todos los derechos reservados.</small>
+      </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/news.demo.js"></script>
+  </body>
+</html>

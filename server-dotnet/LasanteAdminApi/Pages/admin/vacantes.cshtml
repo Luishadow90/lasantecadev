@@ -1,0 +1,34 @@
+@page "/admin/vacantes"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy="JobsEditor")]
+@{
+  Layout = "/Pages/Shared/_Layout.cshtml";
+  ViewData["Title"] = "Vacantes";
+  var ok = Request.Query["ok"].ToString() == "1";
+  var error = Request.Query["error"].ToString() == "1";
+}
+<div class="card"><div class="p">
+  <h2 style="margin-top:0">Gestión de Vacantes</h2>
+  <p style="color:var(--muted-2)">Crea una vacante. Si marcas <b>Publicar</b>, se actualizará automáticamente <code>/trabaja.html</code>.</p>
+
+  @if (ok) { <p style="color:#067647;font-weight:800">Guardado ✅</p> }
+  @if (error) { <p style="color:#b42318;font-weight:800">Faltan campos obligatorios.</p> }
+
+  <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+
+  <form method="post" action="/admin/jobs/save">
+    <label>Puesto <span aria-hidden="true">*</span><br><input name="title" required placeholder="Ej: Representante Médico"></label><br><br>
+    <label>Ubicación<br><input name="location" placeholder="Ej: Ciudad de Guatemala"></label><br><br>
+    <label>Detalle <span aria-hidden="true">*</span><br><textarea name="body" required rows="8" placeholder="Descripción, requisitos, contacto"></textarea></label><br><br>
+    <label>Imagen (URL o ruta en wwwroot)<br><input name="image" placeholder="assets/img/jobs/job-1.svg"></label><br><br>
+
+    <label style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" name="publish" style="width:auto"> Publicar (actualiza trabaja.html)
+    </label>
+
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn primary" type="submit">Guardar</button>
+      <a class="btn ghost" href="/trabaja.html" target="_blank" rel="noopener">Ver página pública →</a>
+    </div>
+  </form>
+</div></div>

@@ -1,0 +1,34 @@
+@page "/admin/noticias"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy="NewsEditor")]
+@{
+  Layout = "/Pages/Shared/_Layout.cshtml";
+  ViewData["Title"] = "Noticias";
+  var ok = Request.Query["ok"].ToString() == "1";
+  var error = Request.Query["error"].ToString() == "1";
+}
+<div class="card"><div class="p">
+  <h2 style="margin-top:0">Gestión de Noticias</h2>
+  <p style="color:var(--muted-2)">Crea una noticia. Si marcas <b>Publicar</b>, se actualizará automáticamente <code>/noticias.html</code>.</p>
+
+  @if (ok) { <p style="color:#067647;font-weight:800">Guardado ✅</p> }
+  @if (error) { <p style="color:#b42318;font-weight:800">Faltan campos obligatorios.</p> }
+
+  <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+
+  <form method="post" action="/admin/news/save">
+    <label>Título <span aria-hidden="true">*</span><br><input name="title" required placeholder="Título de la noticia"></label><br><br>
+    <label>Slug (opcional)<br><input name="slug" placeholder="ej: nueva-alianza"></label><br><br>
+    <label>Contenido <span aria-hidden="true">*</span><br><textarea name="body" required rows="8" placeholder="Texto de la noticia"></textarea></label><br><br>
+    <label>Imagen (URL o ruta en wwwroot)<br><input name="image" placeholder="assets/img/news/news-1.svg"></label><br><br>
+
+    <label style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" name="publish" style="width:auto"> Publicar (actualiza noticias.html)
+    </label>
+
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn primary" type="submit">Guardar</button>
+      <a class="btn ghost" href="/noticias.html" target="_blank" rel="noopener">Ver página pública →</a>
+    </div>
+  </form>
+</div></div>

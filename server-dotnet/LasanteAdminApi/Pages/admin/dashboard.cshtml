@@ -1,0 +1,38 @@
+@page "/admin/dashboard"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@{
+  Layout = "/Pages/Shared/_Layout.cshtml";
+  ViewData["Title"] = "Dashboard";
+  var published = Request.Query["published"].ToString() == "1";
+}
+<div class="grid cols-3">
+  <div class="card"><div class="p">
+    <div class="kicker">Rol actual</div>
+    <h3 class="mt-1">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</h3>
+    <p style="color:var(--muted-2)">Permisos según el rol asignado.</p>
+  </div></div>
+
+  <div class="card"><div class="p">
+    <div class="kicker">Editor 1</div>
+    <h3 class="mt-1">Noticias</h3>
+    <p style="color:var(--muted-2)">Publica imágenes y textos en la sección Noticias.</p>
+  </div></div>
+
+  <div class="card"><div class="p">
+    <div class="kicker">Editor 2</div>
+    <h3 class="mt-1">Vacantes</h3>
+    <p style="color:var(--muted-2)">Publica plazas en Trabaja con Nosotros.</p>
+  </div></div>
+</div>
+
+<div class="card" style="margin-top:16px"><div class="p">
+  <h2 style="margin-top:0">Publicación</h2>
+  <p style="color:var(--muted-2)">Si se cargaron contenidos en bloque, el Administrador puede regenerar las páginas públicas.</p>
+
+  @if (published) { <p style="color:#067647;font-weight:800">Páginas públicas actualizadas ✅</p> }
+
+  <form method="post" action="/admin/publish/all">
+    <button class="btn primary" type="submit">Regenerar noticias.html y trabaja.html</button>
+  </form>
+</div></div>

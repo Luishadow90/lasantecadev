@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin | Banners Home - La Santé</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <div>La Santé — Admin (Demo)</div>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="/admin/dashboard.html">Dashboard</a>
+        <a class="btn danger" href="/admin/logout.html">Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <div class="nav-title">Home</div>
+        <nav class="nav">
+          <a href="/admin/dashboard.html">Dashboard <span>→</span></a>
+          <a href="/admin/posts.html">Artículos <span>→</span></a>
+          <a class="active" href="/admin/banners.html">Banners Home <span>→</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="content-inner">
+        <h1 class="h1">Banners del Home (Hero)</h1>
+        <p class="p">Administra banners (demo). Puedes activar/desactivar, reordenar y cambiar imagen/link.</p>
+
+        <div class="grid" style="grid-template-columns: 1.2fr 1fr;">
+          <div class="card">
+            <h3>Listado</h3>
+
+            <div class="toolbar">
+              <button id="btnNew" class="btn primary" type="button">Nuevo banner</button>
+              <button id="btnSaveOrder" class="btn" type="button">Guardar orden</button>
+            </div>
+
+            <table class="table" aria-label="Listado de banners">
+              <thead>
+                <tr>
+                  <th>Orden</th>
+                  <th>Título</th>
+                  <th>Activo</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+
+            <p class="p" style="margin-top: 12px;">
+              Tip: usa los botones ▲▼ para cambiar el orden.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Editor</h3>
+            <form id="form" class="form">
+              <input type="hidden" id="id" />
+
+              <div>
+                <label class="p" style="margin:0 0 6px;">Título</label>
+                <input id="title" class="input" required />
+              </div>
+
+              <div>
+                <label class="p" style="margin:0 0 6px;">Imagen (ruta)</label>
+                <input id="image" class="input" placeholder="assets/img/hero/Salud.jpg" required />
+              </div>
+
+              <div>
+                <label class="p" style="margin:0 0 6px;">Link</label>
+                <input id="link" class="input" placeholder="portafolio.html" />
+              </div>
+
+              <div class="row">
+                <div>
+                  <label class="p" style="margin:0 0 6px;">Activo</label>
+                  <select id="isActive" class="select">
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="p" style="margin:0 0 6px;">Preview</label>
+                  <div class="card" style="padding: 10px;">
+                    <img id="preview" alt="Preview banner" style="border-radius: 12px; border: 1px solid var(--line);" />
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                <button class="btn primary" type="submit">Guardar</button>
+                <button id="btnReset" class="btn" type="button">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import {
+      requireAuthOrRedirect,
+      ensureSeedData,
+      getBanners,
+      saveBanner,
+      deleteBanner,
+      reorderBanners
+    } from "./assets/js/admin.js";
+
+    requireAuthOrRedirect();
+    ensureSeedData();
+
+    const els = {
+      rows: document.getElementById("rows"),
+      btnNew: document.getElementById("btnNew"),
+      btnSaveOrder: document.getElementById("btnSaveOrder"),
+      btnReset: document.getElementById("btnReset"),
+      form: document.getElementById("form"),
+
+      id: document.getElementById("id"),
+      title: document.getElementById("title"),
+      image: document.getElementById("image"),
+      link: document.getElementById("link"),
+      isActive: document.getElementById("isActive"),
+      preview: document.getElementById("preview")
+    };
+
+    let workingOrderIds = [];
+
+    function render() {
+      const banners = getBanners();
+      workingOrderIds = banners.map(b => b.id);
+
+      els.rows.innerHTML = banners.map((b) => {
+        const badge = b.isActive
+          ? `<span class="badge ok">Activo</span>`
+          : `<span class="badge off">Off</span>`;
+
+        return `
+          <tr>
+            <td>${b.order ?? ""}</td>
+            <td>${escapeHtml(b.title)}</td>
+            <td>${badge}</td>
+            <td style="display:flex; gap:8px; flex-wrap: wrap;">
+              <button class="btn" data-action="up" data-id="${b.id}" type="button">▲</button>
+              <button class="btn" data-action="down" data-id="${b.id}" type="button">▼</button>
+              <button class="btn" data-action="edit" data-id="${b.id}" type="button">Editar</button>
+              <button class="btn danger" data-action="del" data-id="${b.id}" type="button">Borrar</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function resetForm() {
+      els.id.value = "";
+      els.form.reset();
+      els.preview.removeAttribute("src");
+    }
+
+    function fillForm(b) {
+      els.id.value = b.id || "";
+      els.title.value = b.title || "";
+      els.image.value = b.image || "";
+      els.link.value = b.link || "";
+      els.isActive.value = String(!!b.isActive);
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const path = els.image.value.trim();
+      if (!path) return;
+      els.preview.src = `/${path.replace(/^\/+/, "")}`;
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function moveId(id, direction) {
+      const idx = workingOrderIds.indexOf(id);
+      if (idx < 0) return;
+
+      const swapWith = direction === "up" ? idx - 1 : idx + 1;
+      if (swapWith < 0 || swapWith >= workingOrderIds.length) return;
+
+      const copy = workingOrderIds.slice();
+      [copy[idx], copy[swapWith]] = [copy[swapWith], copy[idx]];
+      workingOrderIds = copy;
+    }
+
+    // Events
+    els.btnNew.addEventListener("click", () => {
+      resetForm();
+      els.title.focus();
+    });
+
+    els.btnReset.addEventListener("click", resetForm);
+
+    els.image.addEventListener("input", updatePreview);
+
+    els.rows.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const id = btn.getAttribute("data-id");
+      const action = btn.getAttribute("data-action");
+
+      if (action === "up" || action === "down") {
+        moveId(id, action);
+        // Render table visual basado en workingOrderIds
+        const bannersById = new Map(getBanners().map(b => [b.id, b]));
+        const ordered = workingOrderIds.map(x => bannersById.get(x)).filter(Boolean);
+        // Dibujar manualmente orden sin tocar storage
+        els.rows.innerHTML = ordered.map((b, idx) => {
+          const badge = b.isActive ? `<span class="badge ok">Activo</span>` : `<span class="badge off">Off</span>`;
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${escapeHtml(b.title)}</td>
+              <td>${badge}</td>
+              <td style="display:flex; gap:8px; flex-wrap: wrap;">
+                <button class="btn" data-action="up" data-id="${b.id}" type="button">▲</button>
+                <button class="btn" data-action="down" data-id="${b.id}" type="button">▼</button>
+                <button class="btn" data-action="edit" data-id="${b.id}" type="button">Editar</button>
+                <button class="btn danger" data-action="del" data-id="${b.id}" type="button">Borrar</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+        return;
+      }
+
+      if (action === "edit") {
+        const b = getBanners().find(x => x.id === id);
+        if (b) fillForm(b);
+        return;
+      }
+
+      if (action === "del") {
+        const ok = confirm("¿Seguro que deseas borrar este banner? (demo)");
+        if (!ok) return;
+        deleteBanner(id);
+        render();
+        resetForm();
+        return;
+      }
+    });
+
+    els.btnSaveOrder.addEventListener("click", () => {
+      reorderBanners(workingOrderIds);
+      render();
+      alert("Orden guardado (demo).");
+    });
+
+    els.form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      saveBanner({
+        id: els.id.value || undefined,
+        title: els.title.value.trim(),
+        image: els.image.value.trim().replace(/^\/+/, ""),
+        link: els.link.value.trim(),
+        isActive: els.isActive.value === "true"
+      });
+
+      render();
+      alert("Banner guardado (demo).");
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin | Artículos - La Santé</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <div>La Santé — Admin (Demo)</div>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="/admin/dashboard.html">Dashboard</a>
+        <a class="btn danger" href="/admin/logout.html">Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <div class="nav-title">Contenido</div>
+        <nav class="nav">
+          <a href="/admin/dashboard.html">Dashboard <span>→</span></a>
+          <a class="active" href="/admin/posts.html">Artículos <span>→</span></a>
+          <a href="/admin/banners.html">Banners Home <span>→</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="content-inner">
+        <h1 class="h1">Artículos</h1>
+        <p class="p">Crear, editar y borrar artículos (modo demo con localStorage).</p>
+
+        <div class="toolbar">
+          <button id="btnNew" class="btn primary" type="button">Nuevo artículo</button>
+          <input id="q" class="input" style="max-width: 360px;" placeholder="Buscar por título o slug..." />
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1.2fr 1fr;">
+          <!-- Tabla -->
+          <div class="card">
+            <h3>Listado</h3>
+            <table class="table" aria-label="Listado de artículos">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Slug</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+
+          <!-- Form -->
+          <div class="card">
+            <h3>Editor</h3>
+            <form id="form" class="form">
+              <input type="hidden" id="id" />
+
+              <div>
+                <label class="p" style="margin:0 0 6px;">Título</label>
+                <input id="title" class="input" required />
+              </div>
+
+              <div class="row">
+                <div>
+                  <label class="p" style="margin:0 0 6px;">Slug</label>
+                  <input id="slug" class="input" placeholder="ej: dolor-de-espalda" required />
+                </div>
+                <div>
+                  <label class="p" style="margin:0 0 6px;">Categoría</label>
+                  <input id="category" class="input" placeholder="Prevención / Medicina General..." />
+                </div>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label class="p" style="margin:0 0 6px;">Estado</label>
+                  <select id="status" class="select">
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="p" style="margin:0 0 6px;">Imagen portada (ruta)</label>
+                  <input id="coverImage" class="input" placeholder="assets/img/blog/mi-imagen.jpg" />
+                </div>
+              </div>
+
+              <div>
+                <label class="p" style="margin:0 0 6px;">Excerpt</label>
+                <input id="excerpt" class="input" />
+              </div>
+
+              <div>
+                <label class="p" style="margin:0 0 6px;">Contenido</label>
+                <textarea id="content" class="textarea"></textarea>
+              </div>
+
+              <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                <button class="btn primary" type="submit">Guardar</button>
+                <button id="btnReset" class="btn" type="button">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import {
+      requireAuthOrRedirect,
+      ensureSeedData,
+      getPosts,
+      savePost,
+      deletePost
+    } from "./assets/js/admin.js";
+
+    requireAuthOrRedirect();
+    ensureSeedData();
+
+    const els = {
+      rows: document.getElementById("rows"),
+      q: document.getElementById("q"),
+      btnNew: document.getElementById("btnNew"),
+      btnReset: document.getElementById("btnReset"),
+      form: document.getElementById("form"),
+
+      id: document.getElementById("id"),
+      title: document.getElementById("title"),
+      slug: document.getElementById("slug"),
+      category: document.getElementById("category"),
+      status: document.getElementById("status"),
+      coverImage: document.getElementById("coverImage"),
+      excerpt: document.getElementById("excerpt"),
+      content: document.getElementById("content")
+    };
+
+    function render() {
+      const q = els.q.value.trim().toLowerCase();
+      const posts = getPosts().filter(p => {
+        const hay = `${p.title} ${p.slug}`.toLowerCase();
+        return !q || hay.includes(q);
+      });
+
+      els.rows.innerHTML = posts.map(p => {
+        const badge = p.status === "published"
+          ? `<span class="badge ok">Publicado</span>`
+          : `<span class="badge off">Borrador</span>`;
+
+        return `
+          <tr>
+            <td>${escapeHtml(p.title)}</td>
+            <td>${escapeHtml(p.slug)}</td>
+            <td>${badge}</td>
+            <td style="display:flex; gap:8px; flex-wrap: wrap;">
+              <button class="btn" data-action="edit" data-id="${p.id}" type="button">Editar</button>
+              <button class="btn danger" data-action="del" data-id="${p.id}" type="button">Borrar</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function resetForm() {
+      els.id.value = "";
+      els.form.reset();
+      els.content.value = "";
+    }
+
+    function fillForm(post) {
+      els.id.value = post.id || "";
+      els.title.value = post.title || "";
+      els.slug.value = post.slug || "";
+      els.category.value = post.category || "";
+      els.status.value = post.status || "draft";
+      els.coverImage.value = post.coverImage || "";
+      els.excerpt.value = post.excerpt || "";
+      els.content.value = post.content || "";
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    // Eventos
+    els.q.addEventListener("input", render);
+
+    els.btnNew.addEventListener("click", () => {
+      resetForm();
+      els.title.focus();
+    });
+
+    els.btnReset.addEventListener("click", resetForm);
+
+    els.rows.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const id = btn.getAttribute("data-id");
+      const action = btn.getAttribute("data-action");
+      const post = getPosts().find(p => p.id === id);
+
+      if (action === "edit" && post) {
+        fillForm(post);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      if (action === "del") {
+        const ok = confirm("¿Seguro que deseas borrar este artículo? (demo)");
+        if (!ok) return;
+        deletePost(id);
+        render();
+        resetForm();
+      }
+    });
+
+    els.form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Nota: Slug idealmente se valida/normaliza en backend, aquí solo demo.
+      savePost({
+        id: els.id.value || undefined,
+        title: els.title.value.trim(),
+        slug: els.slug.value.trim(),
+        category: els.category.value.trim(),
+        status: els.status.value,
+        coverImage: els.coverImage.value.trim(),
+        excerpt: els.excerpt.value.trim(),
+        content: els.content.value.trim()
+      });
+
+      render();
+      alert("Guardado (demo).");
+    });
+
+    render();
+  </script>
+</body>
+</html>

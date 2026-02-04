@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin | Dashboard - La Santé</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <div>La Santé — Admin (Demo)</div>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="/index.html">Ver sitio</a>
+        <a class="btn danger" href="/admin/logout.html">Salir</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <div class="nav-title">Panel</div>
+        <nav class="nav">
+          <a class="active" href="/admin/dashboard.html">Dashboard <span>→</span></a>
+          <a href="/admin/posts.html">Artículos <span>→</span></a>
+          <a href="/admin/banners.html">Banners Home <span>→</span></a>
+        </nav>
+
+        <div class="nav-title">Notas</div>
+        <div class="card">
+          <h3>Modo demo</h3>
+          <p class="p" style="margin:0;">
+            Todo se guarda en <b>localStorage</b>. Luego conectamos a API (.NET + SQL) sin rehacer UI.
+          </p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="content-inner">
+        <h1 class="h1">Dashboard</h1>
+        <p class="p">Resumen rápido de contenidos y configuración del home.</p>
+
+        <section class="grid cols-3">
+          <div class="card">
+            <h3>Total artículos</h3>
+            <p id="kpiPosts" class="big">0</p>
+          </div>
+          <div class="card">
+            <h3>Banners activos</h3>
+            <p id="kpiBanners" class="big">0</p>
+          </div>
+          <div class="card">
+            <h3>Estado</h3>
+            <span class="badge ok">Demo OK</span>
+          </div>
+        </section>
+
+        <div class="toolbar">
+          <div style="display:flex; gap:10px;">
+            <a class="btn primary" href="/admin/posts.html">Gestionar artículos</a>
+            <a class="btn" href="/admin/banners.html">Gestionar banners</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Checklist</h3>
+          <ul class="p" style="margin: 0; padding-left: 18px;">
+            <li>Crear/editar artículos (demo).</li>
+            <li>Agregar banners del hero (demo).</li>
+            <li>Luego: conectar a API con SQL Server.</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuthOrRedirect, ensureSeedData, getPosts, getBanners } from "./assets/js/admin.js";
+
+    requireAuthOrRedirect();
+    ensureSeedData();
+
+    document.getElementById("kpiPosts").textContent = String(getPosts().length);
+    document.getElementById("kpiBanners").textContent = String(getBanners().filter(b => b.isActive).length);
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!-- assets/includes/header.html -->
+<header class="header" role="banner">
+  <div class="container nav">
+    <!-- Brand / Logo -->
+    <a class="brand" href="index.html" aria-label="Ir al inicio">
+      <!-- Comentario: ruta relativa (sin /) para que layout.js pueda ajustar en /admin -->
+      <img
+        src="assets/img/La-Sante-logo.png"
+        alt="La Santé"
+        width="180"
+        height="60"
+        decoding="async"
+      />
+      <!-- Comentario: si quieres volver a mostrar texto debajo del logo, descomenta:
+      <div class="brand-text">
+        <b>La Santé</b>
+        <div class="tagline">Salud y vida para más personas</div>
+      </div>
+      -->
+    </a>
+
+    <!-- Mobile toggle -->
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      aria-label="Abrir menú"
+    >
+      ☰
+    </button>
+
+    <!-- Primary nav -->
+    <nav id="primary-nav" aria-label="Principal">
+      <ul class="nav-list">
+        <li><a class="nav-link" href="index.html">Inicio</a></li>
+        <li><a class="nav-link" href="somos.html">Somos</a></li>
+        <li><a class="nav-link" href="portafolio.html">Portafolio</a></li>
+        <li><a class="nav-link" href="farmacovigilancia.html">Farmacovigilancia</a></li>
+        <li><a class="nav-link" href="bioequivalentes.html">Bioequivalentes</a></li>
+        <li><a class="nav-link" href="plan-mas-salud.html">Plan Más Salud</a></li>
+        <li><a class="nav-link" href="trabaja.html">Trabaja con nosotros</a></li>
+        <li><a class="nav-link" href="noticias.html">Noticias</a></li>
+        <li><a class="nav-link" href="contacto.html">Contacto</a></li>
+
+        <li class="nav-cta">
+          <a class="nav-link btn-nav-cta" href="admin/login.html">Admin</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

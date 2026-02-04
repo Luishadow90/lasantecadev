@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0b1b3a"/>
+    <stop offset="1" stop-color="#001a70"/>
+  </linearGradient>
+</defs>
+<rect width="1200" height="600" rx="32" fill="url(#g)"/>
+<circle cx="980" cy="160" r="120" fill="rgba(255,255,255,.18)"/>
+<circle cx="1030" cy="430" r="210" fill="rgba(255,255,255,.10)"/>
+<rect x="70" y="80" width="720" height="440" rx="28" fill="rgba(255,255,255,.14)"/>
+<text x="110" y="210" font-family="system-ui, -apple-system, Segoe UI, Arial" font-size="56" fill="#ffffff" font-weight="800">Farmacovigilancia</text>
+<text x="110" y="280" font-family="system-ui, -apple-system, Segoe UI, Arial" font-size="28" fill="rgba(255,255,255,.9)">Reportes y educación al paciente</text>
+<text x="110" y="460" font-family="system-ui, -apple-system, Segoe UI, Arial" font-size="22" fill="rgba(255,255,255,.85)">La Santé · Demo asset</text>
+</svg>

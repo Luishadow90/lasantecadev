@@ -1,0 +1,1320 @@
+/* =========================================================
+   La Santé — brand.css (DEPURADO)
+   - Sin degradados (brandbook)
+   - Prioriza Amarillo (Pantone 1235 C aprox #FFC72C)
+   - Azul 2748C aprox #001A72 como acento
+   - Nav más “pro” tipo corporativo (Eurofarma vibe)
+   ========================================================= */
+
+/* -------------------------
+   TOKENS / VARIABLES
+-------------------------- */
+:root {
+  /* Brand */
+  --ls-blue: #001A72;        /* Azul 2748C (aprox) */
+  --ls-yellow: #FFC72C;      /* Amarillo 1235 C (aprox) */
+
+  /* Neutrals */
+  --text: #0B1220;
+  --muted: #475467;
+  --surface-1: #ffffff;
+  --surface-2: #F7F8FB;
+  --border: #E5E7EB;
+
+  /* Focus */
+  --focus: #FFC72C;
+
+  /* Soft fills (NO gradients) */
+  --yellow-soft: rgba(255, 199, 44, 0.22);
+  --yellow-soft-2: rgba(255, 199, 44, 0.12);
+  --blue-soft: rgba(0, 26, 114, 0.08);
+
+  /* Shadows */
+  --shadow-sm: 0 6px 18px rgba(0,0,0,0.06);
+  --shadow-md: 0 16px 40px rgba(2,6,23,0.10);
+
+  /* Radius */
+  --r-12: 12px;
+  --r-14: 14px;
+  --r-16: 16px;
+  --r-20: 20px;
+  --r-pill: 999px;
+
+  /* Layout */
+  --container: 1200px;
+}
+
+/* Backward-compat aliases (para que nada “truene”) */
+:root{
+  --brand-blue: var(--ls-blue);
+  --brand-yellow: var(--ls-yellow);
+  --muted-2: var(--muted);
+}
+
+/* -------------------------
+   FONTS
+-------------------------- */
+@font-face {
+  font-family: "Nexa";
+  src: url("/assets/fonts/Nexa-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Nexa";
+  src: url("/assets/fonts/Nexa-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -------------------------
+   RESET / BASE
+-------------------------- */
+* { box-sizing: border-box; }
+
+html:focus-within { scroll-behavior: smooth; }
+
+html, body { margin: 0; padding: 0; }
+
+body{
+  font-family: Nexa, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--surface-1);
+  line-height: 1.5;
+}
+
+a{ color: var(--ls-blue); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+img{ max-width:100%; height:auto; display:block; }
+
+.container{
+  width:100%;
+  max-width: var(--container);
+  margin-inline:auto;
+  padding-inline:16px;
+}
+
+/* Accessibility helpers */
+.hide-visually{
+  position:absolute !important;
+  width:1px; height:1px;
+  padding:0; margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+.skip-link{
+  position:absolute;
+  left:-999px;
+  top:auto;
+  width:1px; height:1px;
+  overflow:hidden;
+}
+.skip-link:focus{
+  left:16px;
+  top:12px;
+  width:auto; height:auto;
+  background:#fff;
+  border:2px solid var(--focus);
+  padding:.5rem 1rem;
+  z-index:1000;
+}
+
+/* =========================================================
+   HEADER / NAV (MENÚ) — PRIORIDAD
+   Soporta: .header .nav + #primary-nav .nav-list
+   y también variantes .navbar
+   ========================================================= */
+.header,
+.navbar{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 2px solid rgba(255, 199, 44, 0.65); /* más amarillo */
+  box-shadow: var(--shadow-sm);
+}
+
+/* Contenedor de la barra */
+.header .nav,
+.navbar .container{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:72px;
+  padding: 10px 0;
+}
+
+/* Brand block */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width: 240px;
+  text-decoration:none;
+}
+.brand img{
+  width: 42px;
+  height:auto;
+}
+.brand b{
+  font-size:1.12rem;
+  color: var(--ls-blue);
+  letter-spacing: .2px;
+}
+.tagline{
+  font-size:.78rem;
+  font-weight:600;
+  color: var(--muted);
+  margin-top:-2px;
+}
+
+/* Nav wrapper */
+#primary-nav{
+  display:flex;
+  align-items:center;
+}
+
+/* Nav list */
+.nav ul,
+.nav-list{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap: 6px;
+  margin:0;
+  padding:0;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+
+/* Links (estilo corporativo, más “navegable”) */
+.nav a.nav-link,
+.nav-list a,
+.nav-link{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 12px;
+  border-radius: var(--r-pill);
+  font-weight: 800;
+  font-size: .95rem;
+  line-height: 1.1;
+  color: var(--ls-blue);
+  text-decoration:none;
+  border: 1px solid transparent;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+/* Hover: “pill” amarillo suave + borde amarillo */
+.nav a.nav-link:hover,
+.nav-list a:hover,
+.nav-link:hover{
+  background: var(--yellow-soft);
+  border-color: rgba(255, 199, 44, 0.75);
+  text-decoration:none;
+  transform: translateY(-1px);
+}
+
+/* Estado activo: Amarillo sólido (prioridad) */
+.nav a.nav-link.active,
+.nav-list a.active,
+.nav-link.active{
+  background: var(--ls-yellow);
+  border-color: rgba(0, 26, 114, 0.12);
+  color: #111;
+}
+
+/* Indicador inferior (sin degradado) */
+.nav a.nav-link::after,
+.nav-list a::after,
+.nav-link::after{
+  content:"";
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:4px;
+  height:3px;
+  border-radius: 3px;
+  background: transparent;
+}
+.nav a.nav-link.active::after,
+.nav-list a.active::after,
+.nav-link.active::after{
+  background: rgba(0, 26, 114, 0.18);
+}
+
+/* CTA Admin (si tu <li class="nav-cta"> existe) */
+.nav-cta a{
+  background: var(--ls-blue);
+  color: #fff !important;
+  border-color: transparent !important;
+  padding: 10px 16px;
+}
+.nav-cta a:hover{
+  background: #001b86;
+  border-color: transparent !important;
+}
+
+/* Toggle (mobile) */
+.nav-toggle{
+  display:none;
+  background:none;
+  border:0;
+  font-size:1.9rem;
+  cursor:pointer;
+  color: var(--ls-blue);
+}
+
+/* Mobile menu */
+@media (max-width: 980px){
+  .nav-toggle{ display:block; }
+
+  #primary-nav{
+    position:absolute;
+    top:72px;
+    left:0; right:0;
+    background:#fff;
+    border-bottom: 2px solid rgba(255,199,44,0.55);
+    display:none;
+    box-shadow: var(--shadow-sm);
+  }
+  #primary-nav.open{ display:block; }
+
+  .nav ul,
+  .nav-list{
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+    padding: 14px 16px;
+  }
+  .nav a.nav-link,
+  .nav-list a,
+  .nav-link{
+    width:100%;
+    justify-content:flex-start;
+  }
+}
+
+/* =========================================================
+   BUTTONS (más amarillo)
+   ========================================================= */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:.7rem 1rem;
+  border-radius: var(--r-14);
+  border:2px solid transparent;
+  font-weight:900;
+  cursor:pointer;
+  text-decoration:none !important;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.btn.primary{
+  background: var(--ls-yellow);
+  color:#111;
+}
+.btn.primary:hover{ background: #F2BE25; transform: translateY(-1px); }
+
+.btn.secondary{
+  background: var(--ls-blue);
+  color:#fff;
+}
+.btn.secondary:hover{ background:#001b86; transform: translateY(-1px); }
+
+.btn.ghost{
+  background: transparent;
+  color: var(--ls-blue);
+  border-color: rgba(255,199,44,0.85); /* más amarillo */
+}
+.btn.ghost:hover{
+  background: var(--yellow-soft-2);
+  border-color: rgba(255,199,44,1);
+  transform: translateY(-1px);
+}
+
+.btn:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 4px rgba(255,199,44,0.45);
+}
+
+/* =========================================================
+   SECTIONS / GRID / CARDS
+   ========================================================= */
+.section{ padding: 40px 0; }
+
+.section-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom: 14px;
+}
+
+.kicker{
+  text-transform:uppercase;
+  color: var(--ls-yellow);
+  font-weight: 900;
+  letter-spacing: .06em;
+  font-size: .75rem;
+}
+
+.section h2{
+  margin:0;
+  font-size: clamp(1.3rem, 1.1rem + .8vw, 2rem);
+}
+
+.grid{ display:grid; gap:14px; }
+.grid.cols-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+.grid.cols-4{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+@media (max-width: 1024px){ .grid.cols-4{ grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 820px){
+  .grid.cols-3, .grid.cols-4{ grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 520px){
+  .grid.cols-3, .grid.cols-4{ grid-template-columns: 1fr; }
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius: var(--r-16);
+  overflow: clip;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.card:hover{
+  transform: translateY(-2px);
+  border-color: rgba(255,199,44,0.65);
+  box-shadow: 0 14px 26px rgba(255,199,44,0.22);
+}
+.card .p{ padding: 16px; }
+.card .icon{
+  width:40px; height:40px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display:grid;
+  place-items:center;
+  color: var(--ls-blue);
+}
+
+/* Utilities */
+.m0{ margin:0; }
+.mt-1{ margin-top:8px; }
+.mt-2{ margin-top:12px; }
+.mt-3{ margin-top:16px; }
+.mt-4{ margin-top:24px; }
+.center{ text-align:center; }
+.round{ border-radius: var(--r-16); }
+
+/* =========================================================
+   HERO (sin degradados / más amarillo)
+   markup: .hero.hero--euro > .hero-stage > .hero-slides > .hero-slide
+   inline: style="--hero-bg: url('...')"
+   ========================================================= */
+.hero.hero--euro{
+  padding:0;
+  background: var(--surface-1);
+}
+
+.hero-stage{
+  position:relative;
+  overflow:hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-slides{
+  position:relative;
+  min-height: clamp(360px, 48vw, 520px);
+}
+
+.hero-slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transform: scale(1.01);
+  transition: opacity .35s ease, transform .6s ease;
+  background-image: var(--hero-bg);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Overlay (SIN gradiente): amarillo + bloque sólido para legibilidad */
+.hero-slide::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(255, 199, 44, 0.20); /* amarillo dominante */
+  pointer-events:none;
+}
+.hero-slide::after{
+  /* “panel” sólido (no degradado) para texto */
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(0, 26, 114, 0.38); /* azul solo para contraste */
+  pointer-events:none;
+  /* Sólo afecta al lado izquierdo donde está el copy */
+  clip-path: polygon(0 0, 52% 0, 42% 100%, 0 100%);
+}
+
+.hero-slide.is-active{
+  opacity:1;
+  transform: scale(1);
+  z-index:1;
+}
+
+.hero-inner{
+  position:relative;
+  z-index:2;
+  display:grid;
+  align-items:center;
+  height:100%;
+  padding: clamp(28px, 4vw, 48px) 0;
+}
+
+.hero-copy{
+  max-width: 560px;
+  color:#fff;
+}
+
+.hero-copy .badge{
+  display:inline-block;
+  margin-bottom:10px;
+  background: rgba(255,199,44,0.95);
+  color:#111;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: var(--r-pill);
+}
+
+.hero-copy h1{
+  color:#fff;
+  margin:0 0 10px;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height:1.1;
+}
+
+.hero-copy .lead{
+  color: rgba(255,255,255,0.92);
+  margin:0 0 18px;
+  font-size: clamp(14px, 1.4vw, 18px);
+}
+
+/* Flechas */
+.hero-arrow{
+  position:absolute;
+  top:50%;
+  transform: translateY(-50%);
+  z-index:5;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-14);
+  border: 1px solid rgba(255,255,255,.35);
+  background: rgba(0,26,114,0.55);
+  color:#fff;
+  font-size:28px;
+  line-height:1;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.hero-arrow:hover{
+  transform: translateY(-50%) scale(1.03);
+  background: rgba(255,199,44,0.85);
+  color:#111;
+  border-color: rgba(255,199,44,1);
+}
+.hero-prev{ left:14px; }
+.hero-next{ right:14px; }
+
+/* Dots */
+.hero-dots{
+  position:absolute;
+  left:50%;
+  bottom:14px;
+  transform: translateX(-50%);
+  z-index:6;
+  display:flex;
+  gap:10px;
+  padding: 8px 12px;
+  border-radius: var(--r-pill);
+  background: rgba(255,199,44,0.28);
+  border: 2px solid rgba(255,199,44,0.9);
+}
+.hero-dot{
+  width:10px;
+  height:10px;
+  border-radius: var(--r-pill);
+  border: 2px solid rgba(0,26,114,0.30);
+  background: rgba(255,255,255,0.85);
+  cursor:pointer;
+}
+.hero-dot.is-active{
+  background: var(--ls-yellow);
+  border-color: var(--ls-blue);
+}
+
+@media (max-width: 980px){
+  .hero-slides{ min-height: clamp(320px, 60vw, 420px); }
+  .hero-slide::after{
+    /* en mobile, panel menos agresivo */
+    clip-path: polygon(0 0, 70% 0, 60% 100%, 0 100%);
+  }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.footer{
+  background: var(--ls-blue);
+  color:#fff;
+  margin-top: 40px;
+  border-top: 6px solid rgba(255,199,44,0.85); /* más amarillo */
+}
+.footer .cols{
+  display:grid;
+  gap:16px;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 32px 0;
+}
+.footer a{ color:#fff; opacity:.92; }
+.footer small{
+  display:block;
+  padding: 12px 0 24px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+@media (max-width: 820px){ .footer .cols{ grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px){ .footer .cols{ grid-template-columns: 1fr; } }
+/* =========================
+   NAV (pro, más limpio)
+   ========================= */
+.header {
+  border-bottom: 3px solid var(--brand-yellow);
+}
+
+.brand img {
+  width: 180px;      /* ajusta aquí si lo quieres más grande */
+  height: auto;
+  max-height: 64px;  /* evita que crezca demasiado */
+  object-fit: contain;
+}
+
+.nav {
+  padding: 14px 0;
+  gap: 18px;
+}
+
+.nav-list {
+  gap: 10px;
+}
+
+.nav-link {
+  padding: .55rem .85rem;
+  border-radius: 999px;
+  font-weight: 800;
+  color: var(--brand-blue);
+}
+
+.nav-link:hover {
+  text-decoration: none;
+  background: rgba(229, 168, 35, 0.18);
+  border: 1px solid rgba(229, 168, 35, 0.45);
+}
+
+.nav-link.active {
+  background: rgba(229, 168, 35, 0.28);
+  border: 1px solid rgba(229, 168, 35, 0.65);
+}
+
+.btn-nav-cta {
+  background: var(--brand-yellow);
+  color: #111;
+  border: 2px solid var(--brand-yellow);
+}
+
+.btn-nav-cta:hover {
+  background: #f2c84a; /* amarillo más claro */
+  border-color: #f2c84a;
+}
+/* =========================================================
+   AJUSTES FINALES: HERO (banners) + NAV MOBILE + ICONOS
+   ========================================================= */
+
+/* 1) HERO: controla tamaño del banner para que no “explote” en desktop */
+.hero-stage {
+  position: relative;
+  height: clamp(320px, 52vh, 520px); /* <- baja el “gigante” */
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+@media (max-width: 900px) {
+  .hero-stage {
+    height: clamp(260px, 44vh, 420px);
+    border-radius: 14px;
+  }
+}
+
+/* Asegura que el background siempre se ajuste */
+.hero-slide {
+  background-image: var(--hero-bg);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Brandbook: SIN degradados -> overlay sólido (solo para legibilidad) */
+.hero-slide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(229, 168, 35, 0.18); /* Amarillo 1235C-ish */
+  pointer-events: none;
+}
+
+/* 2) NAV: mejora visual y asegura layout estable */
+.header {
+  border-bottom: 2px solid var(--brand-yellow);
+}
+
+.nav {
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.brand img {
+  width: 140px;      /* logo más visible */
+  height: auto;
+  max-height: 52px;  /* evita que “estire” el header */
+  object-fit: contain;
+}
+
+/* Enlaces: look más “pill” estilo corporativo */
+.nav-list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  color: var(--brand-blue);
+  border: 1px solid transparent;
+  line-height: 1;
+}
+
+.nav-list a:hover {
+  background: rgba(229, 168, 35, 0.18);
+  border-color: rgba(229, 168, 35, 0.55);
+  text-decoration: none;
+}
+
+.nav-list a.active {
+  background: rgba(229, 168, 35, 0.34);
+  border-color: rgba(229, 168, 35, 0.75);
+}
+
+/* CTA Admin */
+.nav-cta a {
+  background: var(--brand-blue);
+  color: #fff !important;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+}
+
+.nav-cta a:hover {
+  background: #00135a;
+  border-color: rgba(229, 168, 35, 0.55);
+}
+
+/* Botón hamburguesa: que se vea y sea clickeable */
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid rgba(229, 168, 35, 0.65);
+  background: rgba(229, 168, 35, 0.15);
+  color: var(--brand-blue);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nav-toggle:hover {
+  background: rgba(229, 168, 35, 0.25);
+}
+
+/* Mobile nav: dropdown panel */
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  #primary-nav {
+    position: relative;
+  }
+
+  .nav-list {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: min(92vw, 360px);
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 16px 44px rgba(0,0,0,.10);
+    z-index: 100;
+  }
+
+  .nav-list.open {
+    display: flex;
+  }
+
+  .nav-list li {
+    width: 100%;
+  }
+
+  .nav-list a {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 12px;
+  }
+
+  .nav-cta a {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 3) Iconos categorías: más grandes, centrados y con acento amarillo */
+.card .icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(229, 168, 35, 0.22);
+  border: 1px solid rgba(229, 168, 35, 0.35);
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+}
+
+/* Si tus íconos son PNG azul/gris, esto los “amarilliza” */
+.card .icon img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(69%) sepia(88%) saturate(477%) hue-rotate(1deg) brightness(98%) contrast(96%);
+}
+
+/* Centra el contenido del bloque */
+.card .p {
+  text-align: left;
+}
+
+@media (max-width: 520px) {
+  .card .p {
+    text-align: left;
+  }
+}
+/* =========================================================
+   MOBILE TYPOGRAPHY + SPACING (ajustar textos en mobile)
+   ========================================================= */
+
+@media (max-width: 520px) {
+  body {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .container {
+    padding-inline: 14px;
+  }
+
+  /* Header más compacto */
+  .nav {
+    padding: 10px 0;
+  }
+
+  .brand img {
+    width: 132px;     /* logo visible sin romper header */
+    max-height: 44px;
+  }
+
+  /* Hero: reduce altura y texto */
+  .hero-stage {
+    height: clamp(240px, 36vh, 360px);
+    border-radius: 14px;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(1.25rem, 4.8vw, 1.6rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-copy .lead {
+    font-size: 0.95rem;
+    max-width: 38ch;
+  }
+
+  .badge {
+    font-size: 0.78rem;
+    padding: 6px 10px;
+  }
+
+  .cta-row .btn {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  /* Secciones */
+  .section {
+    padding: 28px 0;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .section h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Cards */
+  .card .p {
+    padding: 14px;
+  }
+
+  .card strong {
+    font-size: 0.98rem;
+  }
+
+  .card .mt-1 {
+    margin-top: 6px;
+  }
+
+  /* Footer legible */
+  .footer .cols {
+    gap: 14px;
+  }
+
+  .footer p,
+  .footer li,
+  .footer a {
+    font-size: 0.95rem;
+  }
+}
+
+/* =========================================================
+   MOBILE NAV PANEL (asegura que el menú sí se vea)
+   ========================================================= */
+
+@media (max-width: 900px) {
+  /* IMPORTANTE: nav debe tener referencia para el dropdown */
+  #primary-nav {
+    position: relative;
+  }
+
+  /* fuerza a que el panel aparezca encima del hero */
+  .nav-list {
+    z-index: 9999;
+  }
+
+  /* si hay reglas viejas tipo ".nav ul { display:none }" esto las pisa */
+  .nav #primary-nav .nav-list.open {
+    display: flex !important;
+  }
+}
+/* =========================================================
+   NAV (Mobile dropdown) + logo size
+   ========================================================= */
+
+/* Para que el UL absolute se ancle al contenedor del header */
+.header .nav {
+  position: relative;
+}
+
+/* Logo más grande y limpio */
+.header .brand img {
+  width: 140px;        /* Ajusta: 120–160 según te guste */
+  height: auto;
+  max-height: 56px;    /* Evita que se desmadre el header */
+  object-fit: contain;
+}
+
+/* Links del menú (desktop y mobile) */
+.nav-list a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .45rem .7rem;
+  border-radius: 999px;
+  font-weight: 800;
+  color: var(--brand-blue);
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.nav-list a:hover {
+  background: rgba(229, 168, 35, .18);
+  border-color: rgba(229, 168, 35, .55);
+  text-decoration: none;
+}
+
+.nav-list a.active {
+  background: rgba(229, 168, 35, .28);
+  border-color: rgba(229, 168, 35, .75);
+}
+
+/* CTA Admin en amarillo, tipo “pill” */
+.nav-cta a {
+  background: var(--brand-yellow);
+  color: #111;
+  border-color: rgba(0,0,0,.08);
+  box-shadow: 0 6px 16px rgba(0,0,0,.08);
+}
+.nav-cta a:hover {
+  background: rgba(229, 168, 35, .85);
+}
+
+/* Botón hamburguesa “visible y clickeable” */
+.nav-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid rgba(229, 168, 35, .55);
+  background: rgba(229, 168, 35, .18);
+  color: var(--brand-blue);
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+  display: none;
+}
+
+/* DROPDOWN mobile real */
+@media (max-width: 900px) {
+  .nav-toggle { display: inline-grid; place-items: center; }
+
+  /* Oculta lista en mobile */
+  .nav ul,
+  .nav-list {
+    display: none;
+  }
+
+  /* Cuando JS agrega .open */
+  .nav ul.open,
+  .nav-list.open {
+    display: flex;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: calc(100% + 10px);
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(0,0,0,.14);
+    z-index: 999;
+  }
+
+  .nav-list a {
+    justify-content: flex-start;
+    border-radius: 12px;
+    padding: .65rem .85rem;
+  }
+}
+
+/* =========================================================
+   HERO / BANNERS (menos gigantes)
+   ========================================================= */
+
+/* Ajusta altura del stage para que el banner no “trague” pantalla */
+.hero-stage,
+.hero--euro .hero-media {
+  height: clamp(260px, 34vw, 520px);
+  min-height: 260px;
+}
+
+/* Asegura que las slides llenen el contenedor */
+.hero-slides,
+.hero-slide {
+  height: 100%;
+}
+
+/* Si tu slide es background (hero-bg), esto controla el “zoom” */
+.hero-slide.hero-bg {
+  background-size: cover;
+  background-position: center;
+}
+
+/* Mobile: aún más compacto */
+@media (max-width: 520px) {
+  .hero-stage,
+  .hero--euro .hero-media {
+    height: clamp(220px, 56vw, 340px);
+    min-height: 220px;
+  }
+}
+
+/* =========================================================
+   MOBILE TYPO (textos más legibles y proporcionados)
+   ========================================================= */
+@media (max-width: 520px) {
+  body { font-size: 15px; }
+
+  .hero h1,
+  .hero--euro .hero-copy h1 {
+    font-size: 1.55rem;
+    line-height: 1.1;
+  }
+
+  .hero .lead,
+  .hero--euro .hero-copy .lead {
+    font-size: 0.95rem;
+  }
+
+  .section { padding: 28px 0; }
+  .section h2 { font-size: 1.25rem; }
+}
+
+/* =========================================================
+   CATEGORÍAS (iconos más grandes, centrados, con toque amarillo)
+   ========================================================= */
+
+/* Si tus iconos están dentro de .card .icon */
+.card .icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(229, 168, 35, .18);
+  border: 1px solid rgba(229, 168, 35, .45);
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+}
+
+/* Si son SVG con currentColor */
+.card .icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--brand-yellow);
+}
+
+/* Si son IMG (no se pueden “pintar” fácil), al menos los agrandamos */
+.card .icon img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Centrado en mobile */
+@media (max-width: 520px) {
+  .card .p { padding: 14px; }
+  .card .icon { margin-inline: auto; }
+  .card h3, .card h4 { text-align: left; } /* cambia a center si quieres */
+}
+/* === Demo: Vacantes + Blog === */
+.no-scroll { overflow: hidden; }
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;
+}
+
+.input, .select, .textarea{
+  width:100%;
+  border:1px solid rgba(16,24,40,.12);
+  border-radius:12px;
+  padding:.75rem .9rem;
+  background:#fff;
+  font: inherit;
+}
+
+.textarea{ resize: vertical; }
+
+.muted{ opacity:.78; }
+
+.jobs-filters, .news-filters{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:flex-end;
+}
+.jobs-filters .input, .news-filters .input{ min-width: 240px; }
+.jobs-filters .select, .news-filters .select{ min-width: 200px; }
+
+@media (max-width: 700px){
+  .jobs-filters, .news-filters{ justify-content:flex-start; }
+  .jobs-filters .input, .news-filters .input,
+  .jobs-filters .select, .news-filters .select{ min-width: 100%; }
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:.25rem .55rem;
+  border-radius:999px;
+  font-size:.85rem;
+  border:1px solid rgba(16,24,40,.12);
+  background: rgba(229,168,35,.10);
+  margin-right:6px;
+}
+
+.job-card__top{
+  display:flex;
+  gap:12px;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+.job-card__actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.job-detail .sep{
+  border:0;
+  border-top:1px solid rgba(16,24,40,.10);
+  margin:14px 0;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  z-index:9999;
+}
+.modal.is-open{ display:block; }
+
+.modal__backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.45);
+}
+
+.modal__panel{
+  position:relative;
+  width:min(760px, calc(100% - 24px));
+  margin: 42px auto;
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.22);
+}
+.modal__panel--wide{ width:min(980px, calc(100% - 24px)); }
+
+.modal__header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  padding: 18px 18px 0 18px;
+}
+
+.modal__body{ padding: 14px 18px 18px 18px; }
+
+.modal__footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  padding-top: 14px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.field label{ display:block; font-weight:700; margin-bottom:6px; }
+.field small{ display:block; margin-top:6px; }
+.span-2{ grid-column: 1 / -1; }
+
+@media (max-width: 720px){
+  .form-grid{ grid-template-columns: 1fr; }
+  .span-2{ grid-column:auto; }
+  .modal__panel{ margin: 18px auto; }
+}
+
+.notice{
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(16,24,40,.12);
+  background: rgba(16,24,40,.04);
+}
+.notice.ok{
+  border-color: rgba(18,183,106,.35);
+  background: rgba(18,183,106,.10);
+}
+
+.post-card{ padding:0; }
+.post-card__btn{
+  width:100%;
+  text-align:left;
+  background:transparent;
+  border:0;
+  padding:0;
+  cursor:pointer;
+}
+.post-card__media img{
+  width:100%;
+  height: 180px;
+  object-fit: cover;
+  display:block;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.post-meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:.92rem;
+  opacity:.85;
+}
+.post-meta .dot{ opacity:.6; }
+
+.chips{ display:flex; flex-wrap:wrap; gap:8px; }
+.chip{
+  display:inline-flex;
+  padding:.2rem .55rem;
+  border-radius:999px;
+  border:1px solid rgba(16,24,40,.12);
+  font-size:.85rem;
+  background:#fff;
+}
+
+.post-cover{
+  width:100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(16,24,40,.10);
+}
+
+.prose p, .prose li{ line-height: 1.6; }
+.prose h4{ margin-top: 1rem; }
