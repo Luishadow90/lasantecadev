@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Categoria — La Santé</title>
+    <meta name="description" content="Productos por categoría" />
+    <link rel="stylesheet" href="assets/css/brand.css" />
+    <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+    <div id="site-header"></div>
+
+    <main id="main" tabindex="-1">
+      <!-- HERO -->
+      <section class="category-hero">
+        <div class="container">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span aria-hidden="true">›</span>
+            <a href="portafolio.html">Portafolio</a>
+            <span aria-hidden="true">›</span>
+            <span id="breadcrumb-current">Categoría</span>
+          </nav>
+
+          <div class="hero-row">
+            <div class="hero-text">
+              <div id="cat-kicker" class="kicker">Categoría</div>
+              <h1 id="cat-title">Nombre de categoría</h1>
+              <p id="cat-desc" class="muted">Descripción breve de la categoría.</p>
+            </div>
+            <div class="hero-actions">
+              <a id="cta-catalog" class="btn ghost" href="#">Descargar catálogo</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENIDO: filtros + resultados -->
+      <section class="section">
+        <div class="container">
+          <div class="layout-columns">
+            <!-- SIDEBAR FILTROS -->
+            <aside class="filters" aria-label="Filtros de productos">
+              <div class="filter-block">
+                <label for="search" class="label">Buscar</label>
+                <input id="search" class="input" type="search" placeholder="Buscar por nombre o molécula" />
+              </div>
+
+              <div class="filter-block">
+                <label class="label">Presentación</label>
+                <select id="filter-presentation" class="input">
+                  <option value="">Todas</option>
+                  <option value="tabletas">Tabletas</option>
+                  <option value="jarabe">Jarabe</option>
+                  <option value="inyeccion">Inyección</option>
+                </select>
+              </div>
+
+              <div class="filter-block">
+                <label class="label">Ordenar</label>
+                <select id="sort" class="input">
+                  <option value="relevance">Relevancia</option>
+                  <option value="name_asc">Nombre A–Z</option>
+                  <option value="name_desc">Nombre Z–A</option>
+                </select>
+              </div>
+
+              <div class="filter-block">
+                <button id="reset-filters" class="btn ghost">Limpiar filtros</button>
+              </div>
+
+              <hr />
+
+              <div class="filter-block">
+                <h4 class="m0">Administración</h4>
+                <p class="muted">Acciones rápidas (Admin)</p>
+                <button id="admin-add-product" class="btn primary">Agregar producto</button>
+              </div>
+            </aside>
+
+            <!-- RESULTADOS -->
+            <section class="results" aria-live="polite">
+              <div class="results-header">
+                <div id="results-count">0 productos</div>
+                <div class="results-actions">
+                  <label class="label sr-only" for="per-page">Por página</label>
+                  <select id="per-page" class="input">
+                    <option value="6">6 / página</option>
+                    <option value="12">12 / página</option>
+                    <option value="24">24 / página</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="products-grid" class="grid product-grid" aria-live="polite">
+                <!-- JS inyecta cards -->
+              </div>
+
+              <div class="pagination" id="pagination" role="navigation" aria-label="Paginación">
+                <!-- JS inyecta controles -->
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODAL PRODUCTO -->
+      <div id="product-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-backdrop" data-close="true"></div>
+        <div class="modal-panel" role="document">
+          <button class="modal-close" aria-label="Cerrar" data-close="true">✕</button>
+          <div id="modal-content"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+      <div class="container cols">
+        <div>
+          <h3 class="m0">La Santé</h3>
+          <p class="mt-1">Salud y vida para más personas.</p>
+        </div>
+        <div>
+          <h4>Portafolio</h4>
+          <ul>
+            <li><a href="portafolio.html#categorias">Por categorías</a></li>
+            <li><a href="portafolio.html#moleculas">Por molécula</a></li>
+            <li><a href="portafolio.html#catalogo">Catálogo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container"><small>© 2026 La Santé. Todos los derechos reservados.</small></div>
+    </footer>
+
+    <script src="assets/js/layout.js"></script>
+    <script src="assets/js/products.js"></script>
+    <script src="assets/js/categoria.js"></script>
+  </body>
+</html>
