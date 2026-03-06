@@ -1,70 +1,132 @@
 /* ==========================================================================
    Admin (demo) logic - La Santé
-   - Autenticación DEMO con localStorage
-   - CRUD DEMO para Posts y Banners con localStorage
-   - Pensado para migrar a API (.NET + SQL) después sin rehacer UI
+   - Versión optimizada: modular, segura, preparada para migrar a API (.NET + SQL)
+   - Exporta las mismas funciones públicas que usas hoy (loginDemo, logout, etc.)
+   - Mejora: manejo de errores, validaciones, orden, comentarios y helpers API
    ========================================================================== */
 
 const LS_KEYS = {
-  auth: "lasante_admin_auth",
-  posts: "lasante_posts",
-  banners: "lasante_banners"
+  auth: "lasante_admin_auth_v1",
+  posts: "lasante_posts_v1",
+  banners: "lasante_banners_v1"
 };
 
-/** --------------------------------------------------------------------------
- * Auth (demo)
- * - Usuario: admin@lasante
- * - Password: Admin123!
- * ------------------------------------------------------------------------- */
-export function loginDemo(email, password) {
-  const ok = (email === "admin@lasante" && password === "Admin123!");
-  if (!ok) return { ok: false, message: "Credenciales inválidas (demo)." };
+const API_BASE = document.querySelector('meta[name="api-base"]')?.content || "/api";
 
-  localStorage.setItem(LS_KEYS.auth, JSON.stringify({
-    isAuthed: true,
-    email,
-    ts: Date.now()
-  }));
+/* ============================
+   Utilidades internas
+   ============================ */
+function safeParse(raw, fallback) {
+  try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
+}
+function writeJson(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+function readJson(key, fallback) { return safeParse(localStorage.getItem(key), fallback); }
+function uid(prefix = "id") { return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`; }
 
-  return { ok: true };
+/* ============================
+   Auth helpers (demo + hooks para API)
+   ============================ */
+export function isAuthed() {
+  const raw = readJson(LS_KEYS.auth, null);
+  return !!(raw && raw.isAuthed);
 }
 
-export function logout() {
+export function getAuth() {
+  return readJson(LS_KEYS.auth, null);
+}
+
+export function setAuth(payload) {
+  writeJson(LS_KEYS.auth, payload);
+}
+
+export function clearAuth() {
   localStorage.removeItem(LS_KEYS.auth);
 }
 
-export function requireAuthOrRedirect() {
-  const raw = localStorage.getItem(LS_KEYS.auth);
-  const auth = raw ? JSON.parse(raw) : null;
+/**
+ * loginDemo(email, password)
+ * - Modo local: credenciales fijas para demo
+ * - Guarda estado en localStorage
+ */
+export function loginDemo(email, password) {
+  if (!email || !password) return { ok: false, message: "Email y password son requeridos." };
 
+  const valid = (email === "admin@lasante" && password === "Admin123!");
+  if (!valid) return { ok: false, message: "Credenciales inválidas (demo)." };
+
+  setAuth({ isAuthed: true, email, ts: Date.now(), mode: "demo" });
+  return { ok: true };
+}
+
+/**
+ * loginApi(email, password)
+ * - Intenta login real contra API; devuelve objeto { ok, data?, message? }
+ * - No exportado por defecto; se puede usar desde UI para migración
+ */
+export async function loginApi(email, password) {
+  if (!email || !password) return { ok: false, message: "Email y password son requeridos." };
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      return { ok: false, message: err?.message || "Error de autenticación (API)." };
+    }
+
+    const data = await res.json();
+    // Guardar token y meta en localStorage (ajustar a cookie HttpOnly en producción)
+    setAuth({ isAuthed: true, email, ts: Date.now(), mode: "api", token: data.token });
+    return { ok: true, data };
+  } catch (e) {
+    return { ok: false, message: "No se pudo conectar con el servidor." };
+  }
+}
+
+export function logout() {
+  clearAuth();
+  // Si hay endpoint de logout en API, se puede llamar aquí
+}
+
+/**
+ * requireAuthOrRedirect()
+ * - Uso en páginas admin para proteger rutas
+ */
+export function requireAuthOrRedirect() {
+  const auth = getAuth();
   if (!auth || !auth.isAuthed) {
     window.location.href = "/admin/login.html";
   }
 }
 
-/** --------------------------------------------------------------------------
- * Storage helpers
- * ------------------------------------------------------------------------- */
-function readJson(key, fallback) {
+/* ============================
+   API wrapper (futuro)
+   - fetchApi: añade token si existe y normaliza errores
+   ============================ */
+async function fetchApi(path, opts = {}) {
+  const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
+  const headers = { "Content-Type": "application/json", ...(opts.headers || {}) };
+  const auth = getAuth();
+  if (auth?.token) headers["Authorization"] = `Bearer ${auth.token}`;
+
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
+    const res = await fetch(url, { ...opts, headers });
+    const text = await res.text();
+    const json = text ? JSON.parse(text) : null;
+    if (!res.ok) throw { status: res.status, body: json || text };
+    return { ok: true, data: json };
+  } catch (err) {
+    return { ok: false, error: err };
   }
 }
 
-function writeJson(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-function uid(prefix = "id") {
-  return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now()}`;
-}
-
-/** --------------------------------------------------------------------------
- * Seed (crea datos de ejemplo si no existen)
- * ------------------------------------------------------------------------- */
+/* ============================
+   Seed (crea datos demo si no existen)
+   ============================ */
 export function ensureSeedData() {
   const posts = readJson(LS_KEYS.posts, null);
   const banners = readJson(LS_KEYS.banners, null);
@@ -78,7 +140,7 @@ export function ensureSeedData() {
         category: "Prevención",
         status: "published",
         excerpt: "Causas comunes y recomendaciones para aliviar molestias.",
-        content: "Contenido demo. Aquí irá el artículo completo.",
+        content: "<p>Contenido demo. Aquí irá el artículo completo.</p>",
         coverImage: "assets/img/blog/demo-1.jpg",
         createdAt: new Date().toISOString()
       }
@@ -86,7 +148,6 @@ export function ensureSeedData() {
   }
 
   if (!banners) {
-    // Nota: paths relativos al root del sitio (IIS)
     writeJson(LS_KEYS.banners, [
       {
         id: uid("banner"),
@@ -108,81 +169,118 @@ export function ensureSeedData() {
   }
 }
 
-/** --------------------------------------------------------------------------
- * Posts (CRUD demo)
- * ------------------------------------------------------------------------- */
+/* ============================
+   Posts CRUD (demo) - API-ready
+   - getPosts/savePost/deletePost funcionan con localStorage
+   - si quieres migrar, reemplazar internals por fetchApi
+   ============================ */
 export function getPosts() {
   return readJson(LS_KEYS.posts, []);
 }
 
 export function savePost(input) {
+  if (!input || typeof input !== "object") throw new Error("Input inválido para savePost.");
+
   const posts = getPosts();
   const nowIso = new Date().toISOString();
 
   if (input.id) {
     const idx = posts.findIndex(p => p.id === input.id);
-    if (idx >= 0) posts[idx] = { ...posts[idx], ...input };
-    writeJson(LS_KEYS.posts, posts);
-    return;
+    if (idx >= 0) {
+      posts[idx] = { ...posts[idx], ...input, updatedAt: nowIso };
+      writeJson(LS_KEYS.posts, posts);
+      return posts[idx];
+    }
+    // si no existe, crear nuevo con ese id
   }
 
-  posts.unshift({
-    id: uid("post"),
+  const newPost = {
+    id: input.id || uid("post"),
     createdAt: nowIso,
     ...input
-  });
-
+  };
+  posts.unshift(newPost);
   writeJson(LS_KEYS.posts, posts);
+  return newPost;
 }
 
 export function deletePost(id) {
+  if (!id) return;
   const posts = getPosts().filter(p => p.id !== id);
   writeJson(LS_KEYS.posts, posts);
 }
 
-/** --------------------------------------------------------------------------
- * Banners (CRUD demo)
- * ------------------------------------------------------------------------- */
+/* ============================
+   Banners CRUD (demo) - API-ready
+   ============================ */
 export function getBanners() {
   const banners = readJson(LS_KEYS.banners, []);
-  // Orden estable por "order"
   return banners.slice().sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 }
 
 export function saveBanner(input) {
+  if (!input || typeof input !== "object") throw new Error("Input inválido para saveBanner.");
+
   const banners = getBanners();
 
   if (input.id) {
     const idx = banners.findIndex(b => b.id === input.id);
-    if (idx >= 0) banners[idx] = { ...banners[idx], ...input };
-    writeJson(LS_KEYS.banners, banners);
-    return;
+    if (idx >= 0) {
+      banners[idx] = { ...banners[idx], ...input };
+      writeJson(LS_KEYS.banners, banners);
+      return banners[idx];
+    }
   }
 
   const nextOrder = (banners.reduce((m, b) => Math.max(m, b.order ?? 0), 0) + 1);
-
-  banners.push({
-    id: uid("banner"),
-    order: nextOrder,
-    isActive: true,
+  const newBanner = {
+    id: input.id || uid("banner"),
+    order: input.order ?? nextOrder,
+    isActive: input.isActive ?? true,
     ...input
-  });
-
+  };
+  banners.push(newBanner);
   writeJson(LS_KEYS.banners, banners);
+  return newBanner;
 }
 
 export function deleteBanner(id) {
+  if (!id) return;
   const banners = getBanners().filter(b => b.id !== id);
   writeJson(LS_KEYS.banners, banners);
 }
 
-export function reorderBanners(newOrderIds) {
+export function reorderBanners(newOrderIds = []) {
+  if (!Array.isArray(newOrderIds)) return;
   const banners = getBanners();
   const map = new Map(banners.map(b => [b.id, b]));
-
   const updated = newOrderIds
-    .map((id, idx) => ({ ...map.get(id), order: idx + 1 }))
+    .map((id, idx) => {
+      const item = map.get(id);
+      if (!item) return null;
+      return { ...item, order: idx + 1 };
+    })
     .filter(Boolean);
-
   writeJson(LS_KEYS.banners, updated);
 }
+
+/* ============================
+   Utilities para migración a API
+   - exportar wrappers que usan fetchApi
+   ============================ */
+export async function fetchPostsFromApi() {
+  return await fetchApi("/news");
+}
+export async function createPostToApi(payload) {
+  return await fetchApi("/news", { method: "POST", body: JSON.stringify(payload) });
+}
+export async function fetchBannersFromApi() {
+  return await fetchApi("/banners");
+}
+export async function createBannerToApi(payload) {
+  return await fetchApi("/banners", { method: "POST", body: JSON.stringify(payload) });
+}
+
+/* ============================
+   Fin del módulo
+   ============================ */

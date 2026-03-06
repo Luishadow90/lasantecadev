@@ -1,117 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Contacto — La Santé</title>
-    <meta name="description" content="Envíanos un mensaje" />
-    <link
-      rel="preload"
-      href="/assets/fonts/Nexa-Bold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/assets/fonts/Nexa-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link rel="stylesheet" href="assets/css/brand.css" />
-    <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
-    <meta property="og:title" content="Contacto — La Santé" />
-    <meta property="og:description" content="Envíanos un mensaje" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="assets/img/hero-1.svg" />
-    <meta name="theme-color" content="#E5A823" />
-    <link rel="manifest" href="site.webmanifest" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "La Santé",
-        "url": "/",
-        "logo": "assets/img/logo.svg",
-        "sameAs": [
-          "https://www.facebook.com/",
-          "https://www.linkedin.com/",
-          "https://www.youtube.com/"
-        ]
-      }
-    </script>
-  </head>
-  <body>
-       <a href="#main" class="skip-link">Saltar al contenido</a>
-          <!-- Site Header (INJECTED by assets/js/layout.js) -->
-          <div id="site-header"></div>
-          
-    <main id="main" tabindex="-1">
-      <section class="section">
-        <div class="container">
-          <div class="section-header">
-            <div>
-              <div class="kicker">Contacto</div>
-              <h2>Escríbenos</h2>
-            </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contacto – La Santé</title>
+  <meta name="description" content="Envíanos un mensaje" />
+
+  <link rel="preload" href="/assets/fonts/Nexa-Bold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/Nexa-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="assets/css/brand.css" />
+  <link rel="stylesheet" href="assets/css/contact.css" />
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
+
+  <meta property="og:title" content="Contacto – La Santé" />
+  <meta property="og:description" content="Envíanos un mensaje" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/img/hero-1.svg" />
+  <meta name="theme-color" content="#E5A823" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <meta name="api-base" content="/api" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "La Santé",
+      "url": "/",
+      "logo": "assets/img/logo.svg",
+      "sameAs": [
+        "https://www.facebook.com/",
+        "https://www.linkedin.com/",
+        "https://www.youtube.com/"
+      ]
+    }
+  </script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+
+  <div id="site-header"></div>
+
+  <main id="main" tabindex="-1">
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <div class="kicker">Contacto</div>
+            <h2>Escríbenos</h2>
           </div>
-          <form
-            class="card"
-            style="padding: 16px"
-            method="post"
-            action="#"
-            novalidate
-          >
-            <div class="p">
-              <label
-                >Nombre completo <span aria-hidden="true">*</span><br />
-                <input
-                  required
-                  name="full_name"
-                  autocomplete="name"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                  "
-                />
-              </label>
-            </div>
+        </div>
+
+        <form id="contactForm" class="card contact-card" novalidate>
+          <div class="p">
+            <label>
+              Nombre completo <span aria-hidden="true">*</span><br />
+              <input required name="fullName" autocomplete="name" class="input" />
+            </label>
+          </div>
+
+          <div class="p">
+            <label>
+              Correo electrónico <span aria-hidden="true">*</span><br />
+              <input required type="email" name="email" autocomplete="email" class="input" />
+            </label>
+          </div>
 
             <div class="p">
-              <label
-                >Correo electrónico <span aria-hidden="true">*</span><br />
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  autocomplete="email"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                  "
-                />
-              </label>
-            </div>
-
-            <div class="p">
-              <label
-                >País <span aria-hidden="true">*</span><br />
-                <select
-                  required
-                  name="country"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                    background: #fff;
-                  "
-                >
+              <label>
+                País <span aria-hidden="true">*</span><br />
+                <select required name="country" class="select">
                   <option value="" selected disabled>Selecciona un país</option>
                   <option value="Afghanistan">Afghanistan</option>
                   <option value="Albania">Albania</option>
@@ -333,19 +292,9 @@
             </div>
 
             <div class="p">
-              <label
-                >Ciudad<br />
-                <input
-                  name="city"
-                  list="city-list"
-                  placeholder="Escribe tu ciudad"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                  "
-                />
+              <label>
+                Ciudad<br />
+                <input name="city" list="city-list" placeholder="Escribe tu ciudad" class="input" />
                 <datalist id="city-list">
                   <option value="Ciudad de Guatemala"></option>
                   <option value="San José"></option>
@@ -403,86 +352,42 @@
                   <option value="Havana"></option>
                 </datalist>
               </label>
-              <p
-                class="mt-1"
-                style="
-                  margin-bottom: 0;
-                  color: var(--muted-2);
-                  font-size: 0.9rem;
-                "
-              >
-                Puedes escribir tu ciudad o elegir una sugerencia.
-              </p>
-            </div>
+              <p class="muted small mt-1">Puedes escribir tu ciudad o elegir una sugerencia.</p>
+          </div>
 
             <div class="p">
               <label
                 >Número de teléfono<br />
-                <input
-                  type="tel"
-                  name="phone"
-                  autocomplete="tel"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                  "
-                />
+                <input type="tel" name="phone" autocomplete="tel" class="input" />
               </label>
             </div>
 
             <div class="p">
-              <label
-                >Asunto de la consulta <span aria-hidden="true">*</span><br />
-                <input
-                  required
-                  name="subject"
-                  autocomplete="off"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                  "
-                />
+              <label>
+                Asunto de la consulta <span aria-hidden="true">*</span><br />
+                <input required name="subject" autocomplete="off" class="input" />
               </label>
-            </div>
+           </div>
 
             <div class="p">
-              <label
-                >Mensaje / Detalle de la consulta
-                <span aria-hidden="true">*</span><br />
-                <textarea
-                  required
-                  name="message"
-                  rows="5"
-                  style="
-                    width: 100%;
-                    padding: 0.7rem;
-                    border: 1px solid var(--border);
-                    border-radius: 12px;
-                  "
-                ></textarea>
+              <label>
+                Mensaje / Detalle de la consulta <span aria-hidden="true">*</span><br />
+                <textarea required name="message" rows="5" class="textarea"></textarea>
               </label>
-            </div>
+           </div>
 
-            <div class="p" style="display: flex; gap: 10px; flex-wrap: wrap">
-              <button class="btn primary" type="submit">Enviar</button>
-              <a
-                class="btn secondary"
-                href="https://wa.me/0000000000"
-                target="_blank"
-                rel="noopener"
-                >WhatsApp</a
-              >
-            </div>
+           <div class="p actions">
+            <button class="btn primary" type="submit">Enviar</button>
+            <a class="btn secondary" href="https://wa.me/0000000000" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
 
-            <p class="p" style="color: #475467">
-              *Este formulario es un placeholder; en la fase 2 se conectará a
-              base de datos/CRM y se configurará el correo de notificaciones.
-            </p>
-          </form>
+          <p id="contactOk" class="notice ok" hidden>Tu mensaje fue enviado correctamente.</p>
+          <p id="contactErr" class="notice error" hidden>Ocurrió un error. Intenta nuevamente.</p>
+
+          <p class="muted mt-2 small">
+            *Este formulario se conectará a base de datos/CRM y enviará correo de notificación en la fase 2.
+          </p>
+        </form>
 
           <div class="mt-4">
             <h3>Ubicación</h3>
@@ -491,44 +396,47 @@
         </div>
       </section>
     </main>
-    <footer class="footer" role="contentinfo">
-      <div class="container cols">
-        <div>
-          <h3 class="m0">La Santé</h3>
-          <p class="mt-1">Salud y vida para más personas.</p>
-          <div class="mt-2">
-            <a class="btn secondary" href="portafolio.html">Ver portafolio</a>
-          </div>
-        </div>
-        <div>
-          <h4>Portafolio</h4>
-          <ul>
-            <li><a href="portafolio.html#categorias">Por categorías</a></li>
-            <li><a href="portafolio.html#moleculas">Por molécula</a></li>
-            <li><a href="portafolio.html#catalogo">Catálogo</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="privacidad.html">Política de Privacidad</a></li>
-            <li><a href="terminos.html">Términos y Condiciones</a></li>
-            <li><a href="cookies.html">Política de Cookies</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Síguenos</h4>
-          <p>
-            <a href="#">Facebook</a> · <a href="#">LinkedIn</a> ·
-            <a href="#">YouTube</a>
-          </p>
+  <footer class="footer">
+    <div class="container cols">
+      <div>
+        <h3 class="m-0">La Santé</h3>
+        <p class="mt-1">Salud y vida para más personas.</p>
+        <div class="mt-2">
+          <a class="btn secondary" href="portafolio.html">Ver portafolio</a>
         </div>
       </div>
-      <div class="container">
-        <small>© 2026 La Santé. Todos los derechos reservados.</small>
+
+      <div>
+        <h4>Portafolio</h4>
+        <ul>
+          <li><a href="portafolio.html#categorias">Por categorías</a></li>
+          <li><a href="portafolio.html#moleculas">Por molécula</a></li>
+          <li><a href="portafolio.html#catalogo">Catálogo</a></li>
+        </ul>
       </div>
-    </footer>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/layout.js"></script>
-  </body>
+
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacidad.html">Política de Privacidad</a></li>
+          <li><a href="terminos.html">Términos y condiciones</a></li>
+          <li><a href="cookies.html">Política de Cookies</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Síguenos</h4>
+        <p><a href="#">Facebook</a> · <a href="#">LinkedIn</a> · <a href="#">YouTube</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <small>© 2026 La Santé. Todos los derechos reservados.</small>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/contact.js"></script>
+</body>
 </html>

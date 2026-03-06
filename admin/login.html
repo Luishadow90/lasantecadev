@@ -4,14 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin | Login - La Santé</title>
+
+  <!-- CSS principal del Admin -->
   <link rel="stylesheet" href="assets/css/admin.css" />
+
+  <!-- API base para producción -->
+  <meta name="api-base" content="/api" />
 </head>
+
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
         <div class="brand-badge" aria-hidden="true"></div>
-        <div>La Santé — Admin (Demo)</div>
+        <div>La Santé — Admin</div>
       </div>
       <div class="top-actions">
         <a class="btn" href="/index.html">Volver al sitio</a>
@@ -23,33 +29,34 @@
     <section class="content" style="max-width: 520px; margin: 22px auto;">
       <div class="content-inner">
         <h1 class="h1">Iniciar sesión</h1>
-        <p class="p">Demo local. Luego se conectará a .NET + SQL (roles y permisos reales).</p>
+        <p class="p">Acceso al panel administrativo.</p>
 
         <form id="loginForm" class="form" autocomplete="off">
-          <div>
-            <label for="email" class="p" style="margin:0 0 6px;">Email</label>
+          <div class="field">
+            <label for="email" class="label">Email</label>
             <input id="email" class="input" type="email" placeholder="admin@lasante" required />
           </div>
 
-          <div>
-            <label for="password" class="p" style="margin:0 0 6px;">Password</label>
+          <div class="field">
+            <label for="password" class="label">Password</label>
             <input id="password" class="input" type="password" placeholder="Admin123!" required />
           </div>
 
-          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; margin-top:6px;">
+          <div class="actions">
             <button class="btn primary" type="submit">Entrar</button>
-            <span id="msg" class="p" style="margin:0;"></span>
+            <span id="msg" class="msg"></span>
           </div>
 
-          <div class="card" style="margin-top: 12px;">
+          <div class="card mt-2">
             <h3>Credenciales demo</h3>
-            <p class="p" style="margin:0;">Usuario: <b>admin@lasante</b> · Password: <b>Admin123!</b></p>
+            <p class="p">Usuario: <b>admin@lasante</b> · Password: <b>Admin123!</b></p>
           </div>
         </form>
       </div>
     </section>
   </main>
 
+  <!-- JS del Admin -->
   <script type="module">
     import { loginDemo, ensureSeedData } from "./assets/js/admin.js";
 
@@ -57,17 +64,41 @@
 
     const form = document.getElementById("loginForm");
     const msg = document.getElementById("msg");
+    const apiBase = document.querySelector('meta[name="api-base"]').content;
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      msg.textContent = "";
 
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
-      const res = loginDemo(email, password);
+      /* 
+        1) Intento de login real vía API (producción)
+        2) Si falla → fallback a loginDemo (modo local)
+      */
 
-      if (!res.ok) {
-        msg.textContent = res.message;
+      try {
+        const res = await fetch(`${apiBase}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem("ls_token", data.token);
+          window.location.href = "/admin/dashboard.html";
+          return;
+        }
+      } catch (err) {
+        console.warn("API no disponible, usando modo demo.");
+      }
+
+      // Fallback demo
+      const demo = loginDemo(email, password);
+      if (!demo.ok) {
+        msg.textContent = demo.message;
         return;
       }
 

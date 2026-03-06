@@ -5,33 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin | Dashboard - La Santé</title>
   <link rel="stylesheet" href="assets/css/admin.css" />
+  <meta name="api-base" content="/api" />
 </head>
 <body>
-  <header class="topbar">
+  <header class="topbar" role="banner">
     <div class="topbar-inner">
-      <div class="brand">
+      <div class="brand" aria-hidden="false">
         <div class="brand-badge" aria-hidden="true"></div>
-        <div>La Santé — Admin (Demo)</div>
+        <div>La Santé — Admin</div>
       </div>
-      <div class="top-actions">
-        <a class="btn" href="/index.html">Ver sitio</a>
-        <a class="btn danger" href="/admin/logout.html">Salir</a>
+
+      <div class="top-actions" role="navigation" aria-label="Acciones rápidas">
+        <a class="btn" href="/index.html" title="Ver sitio">Ver sitio</a>
+        <button id="btnLogout" class="btn danger" title="Cerrar sesión">Salir</button>
       </div>
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar">
+  <div class="layout" role="main">
+    <aside class="sidebar" aria-label="Navegación principal">
       <div class="sidebar-inner">
         <div class="nav-title">Panel</div>
-        <nav class="nav">
-          <a class="active" href="/admin/dashboard.html">Dashboard <span>→</span></a>
-          <a href="/admin/posts.html">Artículos <span>→</span></a>
-          <a href="/admin/banners.html">Banners Home <span>→</span></a>
+        <nav class="nav" id="adminNav" aria-label="Secciones del panel">
+          <a data-href="/admin/dashboard.html" href="/admin/dashboard.html" class="nav-link">Dashboard <span aria-hidden="true">→</span></a>
+          <a data-href="/admin/posts.html" href="/admin/posts.html" class="nav-link">Artículos <span aria-hidden="true">→</span></a>
+          <a data-href="/admin/banners.html" href="/admin/banners.html" class="nav-link">Banners Home <span aria-hidden="true">→</span></a>
+          <a data-href="/admin/jobs.html" href="/admin/jobs.html" class="nav-link">Vacantes <span aria-hidden="true">→</span></a>
+          <a data-href="/admin/products.html" href="/admin/products.html" class="nav-link">Productos <span aria-hidden="true">→</span></a>
         </nav>
 
         <div class="nav-title">Notas</div>
-        <div class="card">
+        <div class="card" aria-live="polite">
           <h3>Modo demo</h3>
           <p class="p" style="margin:0;">
             Todo se guarda en <b>localStorage</b>. Luego conectamos a API (.NET + SQL) sin rehacer UI.
@@ -40,39 +44,41 @@
       </div>
     </aside>
 
-    <main class="content">
+    <main class="content" aria-label="Contenido principal">
       <div class="content-inner">
         <h1 class="h1">Dashboard</h1>
         <p class="p">Resumen rápido de contenidos y configuración del home.</p>
 
-        <section class="grid cols-3">
-          <div class="card">
-            <h3>Total artículos</h3>
-            <p id="kpiPosts" class="big">0</p>
+        <section class="grid cols-3" aria-label="Indicadores principales">
+          <div class="card" role="region" aria-labelledby="kpiPostsLabel">
+            <h3 id="kpiPostsLabel">Total artículos</h3>
+            <p id="kpiPosts" class="big" aria-live="polite">0</p>
           </div>
-          <div class="card">
-            <h3>Banners activos</h3>
-            <p id="kpiBanners" class="big">0</p>
+
+          <div class="card" role="region" aria-labelledby="kpiBannersLabel">
+            <h3 id="kpiBannersLabel">Banners activos</h3>
+            <p id="kpiBanners" class="big" aria-live="polite">0</p>
           </div>
-          <div class="card">
-            <h3>Estado</h3>
-            <span class="badge ok">Demo OK</span>
+
+          <div class="card" role="region" aria-labelledby="kpiStatusLabel">
+            <h3 id="kpiStatusLabel">Estado</h3>
+            <span id="kpiStatus" class="badge ok">Demo OK</span>
           </div>
         </section>
 
-        <div class="toolbar">
+        <div class="toolbar" aria-hidden="false">
           <div style="display:flex; gap:10px;">
             <a class="btn primary" href="/admin/posts.html">Gestionar artículos</a>
             <a class="btn" href="/admin/banners.html">Gestionar banners</a>
           </div>
         </div>
 
-        <div class="card">
-          <h3>Checklist</h3>
+        <div class="card" role="region" aria-labelledby="checklistLabel">
+          <h3 id="checklistLabel">Checklist</h3>
           <ul class="p" style="margin: 0; padding-left: 18px;">
             <li>Crear/editar artículos (demo).</li>
             <li>Agregar banners del hero (demo).</li>
-            <li>Luego: conectar a API con SQL Server.</li>
+            <li>Conectar a API con SQL Server cuando esté listo.</li>
           </ul>
         </div>
       </div>
@@ -80,13 +86,82 @@
   </div>
 
   <script type="module">
-    import { requireAuthOrRedirect, ensureSeedData, getPosts, getBanners } from "./assets/js/admin.js";
+    import {
+      requireAuthOrRedirect,
+      ensureSeedData,
+      getPosts,
+      getBanners,
+      logout,
+      fetchPostsFromApi,
+      fetchBannersFromApi,
+      getAuth
+    } from "./assets/js/admin.js";
 
+    // Protege la página
     requireAuthOrRedirect();
+
+    // Asegura datos demo si no existen
     ensureSeedData();
 
-    document.getElementById("kpiPosts").textContent = String(getPosts().length);
-    document.getElementById("kpiBanners").textContent = String(getBanners().filter(b => b.isActive).length);
+    // Marca la navegación activa según la ruta actual
+    (function markActiveNav() {
+      const links = document.querySelectorAll('.nav-link');
+      const current = location.pathname.replace(/\/$/, '');
+      links.forEach(a => {
+        const href = a.getAttribute('data-href') || a.getAttribute('href');
+        if (!href) return;
+        const normalized = new URL(href, location.origin).pathname.replace(/\/$/, '');
+        a.classList.toggle('active', normalized === current);
+      });
+    })();
+
+    // Logout: limpia estado demo y redirige a login
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      logout();
+      window.location.href = '/admin/login.html';
+    });
+
+    // KPI loader: intenta API, si falla usa demo local
+    (async function loadKpis() {
+      // Posts
+      try {
+        const apiPosts = await fetchPostsFromApi();
+        if (apiPosts?.ok && Array.isArray(apiPosts.data)) {
+          document.getElementById('kpiPosts').textContent = String(apiPosts.data.length);
+        } else {
+          document.getElementById('kpiPosts').textContent = String(getPosts().length);
+        }
+      } catch {
+        document.getElementById('kpiPosts').textContent = String(getPosts().length);
+      }
+
+      // Banners
+      try {
+        const apiBanners = await fetchBannersFromApi();
+        if (apiBanners?.ok && Array.isArray(apiBanners.data)) {
+          const active = apiBanners.data.filter(b => b.isActive).length;
+          document.getElementById('kpiBanners').textContent = String(active);
+        } else {
+          const active = getBanners().filter(b => b.isActive).length;
+          document.getElementById('kpiBanners').textContent = String(active);
+        }
+      } catch {
+        const active = getBanners().filter(b => b.isActive).length;
+        document.getElementById('kpiBanners').textContent = String(active);
+      }
+
+      // Estado: si hay auth por API, mostrar modo API
+      const auth = getAuth();
+      const statusEl = document.getElementById('kpiStatus');
+      if (auth?.mode === 'api') {
+        statusEl.textContent = 'Conectado (API)';
+        statusEl.classList.remove('ok');
+        statusEl.classList.add('badge');
+        statusEl.style.background = 'rgba(29,78,216,0.12)';
+      } else {
+        statusEl.textContent = 'Demo OK';
+      }
+    })();
   </script>
 </body>
 </html>

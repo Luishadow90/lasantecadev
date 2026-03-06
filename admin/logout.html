@@ -5,21 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin | Logout - La Santé</title>
   <link rel="stylesheet" href="assets/css/admin.css" />
+  <meta name="api-base" content="/api" />
+  <style>
+    /* Pequeños estilos locales para la pantalla de logout (puedes moverlos a admin.css) */
+    .logout-wrap { max-width: 680px; margin: 48px auto; }
+    .logout-panel { padding: 22px; border-radius: 12px; text-align: center; }
+    .logout-status { display:flex; gap:12px; align-items:center; justify-content:center; margin-top:12px; }
+    .spinner {
+      width:20px; height:20px; border-radius:50%;
+      border:3px solid rgba(255,255,255,0.08);
+      border-top-color: rgba(244,194,26,0.95);
+      animation: spin 900ms linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
-  <main class="container" style="max-width: 680px;">
-    <section class="content" style="margin-top: 30px;">
-      <div class="content-inner">
-        <h1 class="h1">Cerrando sesión…</h1>
-        <p class="p">Redirigiendo al login.</p>
+  <main class="container logout-wrap" role="main">
+    <section class="content" aria-labelledby="logoutTitle">
+      <div class="content-inner logout-panel">
+        <h1 id="logoutTitle" class="h1">Cerrando sesión…</h1>
+        <p class="p" id="logoutMessage">Saliendo de la sesión y redirigiendo al inicio de sesión.</p>
+
+        <div class="logout-status" aria-live="polite" aria-atomic="true">
+          <div class="spinner" aria-hidden="true"></div>
+          <div id="logoutState" class="p">Procesando</div>
+        </div>
+
+        <p class="p" style="margin-top:14px;">
+          Si la redirección no ocurre automáticamente, <a id="manualLink" href="/admin/login.html">haz clic aquí</a>.
+        </p>
       </div>
     </section>
   </main>
 
   <script type="module">
     import { logout } from "./assets/js/admin.js";
-    logout();
-    window.location.href = "/admin/login.html";
+
+    (async function () {
+      const stateEl = document.getElementById('logoutState');
+      const msgEl = document.getElementById('logoutMessage');
+
+      try {
+        // Ejecuta la limpieza local (demo) y cualquier hook futuro
+        await Promise.resolve(logout());
+
+        // Mensaje claro para el usuario
+        stateEl.textContent = 'Sesión cerrada';
+        msgEl.textContent = 'Redirigiendo al login…';
+
+        // Pequeña pausa para que el usuario vea el estado
+        setTimeout(() => {
+          window.location.replace('/admin/login.html');
+        }, 700);
+      } catch (err) {
+        console.error('Logout error', err);
+        stateEl.textContent = 'Error cerrando sesión';
+        msgEl.textContent = 'Intenta recargar la página o haz clic en el enlace.';
+      }
+    })();
   </script>
 </body>
 </html>

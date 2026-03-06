@@ -1,9 +1,11 @@
 /* ==========================================================================
    Admin UI - La Santé
-   - Estilos base para el panel
-   - Mantener simple, limpio y responsive
+   Sistema de diseño para el panel administrativo
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Variables globales
+   -------------------------------------------------------------------------- */
 :root {
   --bg: #0b1220;
   --panel: #0f1a33;
@@ -18,28 +20,52 @@
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
   --radius: 16px;
   --radius-sm: 12px;
+
+  --transition: 140ms ease;
+  --input-bg: rgba(255, 255, 255, 0.03);
 }
 
+/* --------------------------------------------------------------------------
+   Reset
+   -------------------------------------------------------------------------- */
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html, body { height: 100%; margin: 0; padding: 0; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* --------------------------------------------------------------------------
+   Body / Background
+   -------------------------------------------------------------------------- */
 body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--text);
-  background: radial-gradient(1200px 900px at 20% 5%, rgba(29, 78, 216, 0.25), transparent 55%),
-              radial-gradient(1200px 900px at 90% 10%, rgba(244, 194, 26, 0.18), transparent 55%),
-              var(--bg);
+  background:
+    radial-gradient(1200px 900px at 20% 5%, rgba(29, 78, 216, 0.25), transparent 55%),
+    radial-gradient(1200px 900px at 90% 10%, rgba(244, 194, 26, 0.18), transparent 55%),
+    var(--bg);
 }
 
-a { color: inherit; text-decoration: none; }
-img { max-width: 100%; height: auto; display: block; }
-
+/* --------------------------------------------------------------------------
+   Layout general
+   -------------------------------------------------------------------------- */
 .container {
   max-width: 1180px;
   margin: 0 auto;
   padding: 22px;
 }
 
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  padding: 18px 22px 28px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Topbar
+   -------------------------------------------------------------------------- */
 .topbar {
   position: sticky;
   top: 0;
@@ -75,12 +101,9 @@ img { max-width: 100%; height: auto; display: block; }
   box-shadow: var(--shadow);
 }
 
-.top-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
+/* --------------------------------------------------------------------------
+   Botones
+   -------------------------------------------------------------------------- */
 .btn {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.04);
@@ -88,10 +111,11 @@ img { max-width: 100%; height: auto; display: block; }
   padding: 10px 12px;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  transition: var(--transition);
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-size: 14px;
 }
 
 .btn:hover {
@@ -112,15 +136,9 @@ img { max-width: 100%; height: auto; display: block; }
   background: rgba(239, 68, 68, 0.14);
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 18px;
-  padding: 18px 22px 28px;
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
+/* --------------------------------------------------------------------------
+   Sidebar
+   -------------------------------------------------------------------------- */
 .sidebar {
   position: sticky;
   top: 78px;
@@ -132,9 +150,7 @@ img { max-width: 100%; height: auto; display: block; }
   overflow: hidden;
 }
 
-.sidebar .sidebar-inner {
-  padding: 14px;
-}
+.sidebar-inner { padding: 14px; }
 
 .nav-title {
   font-size: 12px;
@@ -150,13 +166,14 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .nav a {
-  padding: 12px 12px;
+  padding: 12px;
   border-radius: 12px;
   border: 1px solid transparent;
   color: var(--muted);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: var(--transition);
 }
 
 .nav a:hover {
@@ -171,6 +188,9 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--text);
 }
 
+/* --------------------------------------------------------------------------
+   Content
+   -------------------------------------------------------------------------- */
 .content {
   border: 1px solid var(--line);
   background: rgba(15, 26, 51, 0.55);
@@ -179,9 +199,7 @@ img { max-width: 100%; height: auto; display: block; }
   overflow: hidden;
 }
 
-.content-inner {
-  padding: 18px;
-}
+.content-inner { padding: 18px; }
 
 .h1 {
   margin: 0 0 6px;
@@ -195,15 +213,9 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1.45;
 }
 
-.grid {
-  display: grid;
-  gap: 14px;
-}
-
-.grid.cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
+/* --------------------------------------------------------------------------
+   Cards
+   -------------------------------------------------------------------------- */
 .card {
   border: 1px solid var(--line);
   background: rgba(16, 31, 61, 0.55);
@@ -226,23 +238,34 @@ img { max-width: 100%; height: auto; display: block; }
   margin: 0;
 }
 
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
+/* --------------------------------------------------------------------------
+   Formularios
+   -------------------------------------------------------------------------- */
+.form {
+  display: grid;
   gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  margin: 10px 0 14px;
 }
 
-.input, .select, .textarea {
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.input,
+.select,
+.textarea {
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--input-bg);
   color: var(--text);
   outline: none;
+  transition: var(--transition);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--brand);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .textarea {
@@ -250,17 +273,9 @@ img { max-width: 100%; height: auto; display: block; }
   resize: vertical;
 }
 
-.form {
-  display: grid;
-  gap: 10px;
-}
-
-.form .row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
+/* --------------------------------------------------------------------------
+   Tablas
+   -------------------------------------------------------------------------- */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -269,7 +284,8 @@ img { max-width: 100%; height: auto; display: block; }
   border: 1px solid var(--line);
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: 10px 12px;
   border-bottom: 1px solid var(--line);
   text-align: left;
@@ -284,6 +300,9 @@ img { max-width: 100%; height: auto; display: block; }
   letter-spacing: 0.9px;
 }
 
+/* --------------------------------------------------------------------------
+   Badges
+   -------------------------------------------------------------------------- */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -295,12 +314,53 @@ img { max-width: 100%; height: auto; display: block; }
   background: rgba(255, 255, 255, 0.03);
 }
 
-.badge.ok { border-color: rgba(34, 197, 94, 0.35); background: rgba(34, 197, 94, 0.12); }
-.badge.off { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.12); }
+.badge.ok {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+}
 
+.badge.off {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
 @media (max-width: 960px) {
   .layout { grid-template-columns: 1fr; }
   .sidebar { position: relative; top: 0; height: auto; }
   .grid.cols-3 { grid-template-columns: 1fr; }
   .form .row { grid-template-columns: 1fr; }
 }
+
+/* Sortable visual helpers */
+.drag-handle {
+  cursor: grab;
+  padding: 6px 8px;
+  text-align: center;
+  width: 36px;
+}
+.sortable-ghost { opacity: 0.6; transform: scale(0.98); }
+.sortable-chosen { outline: 2px dashed rgba(244,194,26,0.35); }
+/* Product cards (admin) */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 220px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.28); }
+.products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+/* Logout panel helpers */
+.logout-wrap { max-width: 680px; margin: 48px auto; }
+.logout-panel { padding: 22px; border-radius: 12px; text-align: center; }
+.logout-status { display:flex; gap:12px; align-items:center; justify-content:center; margin-top:12px; }
+.spinner {
+  width:20px; height:20px; border-radius:50%;
+  border:3px solid rgba(255,255,255,0.08);
+  border-top-color: rgba(244,194,26,0.95);
+  animation: spin 900ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin | Productos - La Santé</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+  <meta name="api-base" content="/api" />
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <div class="brand" aria-hidden="false">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <div>La Santé — Admin</div>
+      </div>
+
+      <div class="top-actions" role="navigation" aria-label="Acciones rápidas">
+        <a class="btn" href="/admin/dashboard.html">Dashboard</a>
+        <button id="btnLogout" class="btn danger">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout" role="main">
+    <aside class="sidebar" aria-label="Navegación">
+      <div class="sidebar-inner">
+        <div class="nav-title">Catálogo</div>
+        <nav class="nav" aria-label="Secciones">
+          <a data-href="/admin/dashboard.html" href="/admin/dashboard.html">Dashboard</a>
+          <a data-href="/admin/products.html" href="/admin/products.html" class="active">Productos</a>
+          <a data-href="/admin/posts.html" href="/admin/posts.html">Artículos</a>
+          <a data-href="/admin/banners.html" href="/admin/banners.html">Banners</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content" aria-label="Gestión de productos">
+      <div class="content-inner">
+        <h1 class="h1">Productos</h1>
+        <p class="p">Crear, editar y publicar productos. Demo con localStorage; preparado para API.</p>
+
+        <div class="toolbar" role="toolbar" aria-label="Herramientas de productos">
+          <button id="btnNew" class="btn primary" type="button">Nuevo producto</button>
+          <input id="q" class="input" style="max-width:360px;" placeholder="Buscar por nombre o SKU..." />
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 420px; gap:18px;">
+          <!-- Listado y cards -->
+          <div class="card" aria-live="polite">
+            <h3>Listado</h3>
+
+            <div id="productsGrid" class="grid cols-3" style="gap:12px; margin-bottom:12px;"></div>
+
+            <table class="table" style="margin-top:12px;">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>SKU</th>
+                  <th>Categoría</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+
+          <!-- Editor -->
+          <div class="card" id="editorCard">
+            <h3 id="editorTitle">Editor</h3>
+            <form id="form" class="form" novalidate>
+              <input type="hidden" id="id" />
+
+              <div class="field">
+                <label for="name">Nombre</label>
+                <input id="name" class="input" required />
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label for="sku">SKU</label>
+                  <input id="sku" class="input" />
+                </div>
+                <div class="field">
+                  <label for="category">Categoría</label>
+                  <input id="category" class="input" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="price">Precio</label>
+                <input id="price" class="input" type="number" step="0.01" />
+              </div>
+
+              <div class="field">
+                <label for="image">Imagen (ruta o URL)</label>
+                <input id="image" class="input" placeholder="assets/img/products/mi-producto.jpg" />
+              </div>
+
+              <div class="field">
+                <label for="excerpt">Resumen</label>
+                <input id="excerpt" class="input" />
+              </div>
+
+              <div class="field">
+                <label for="description">Descripción</label>
+                <textarea id="description" class="textarea" rows="6"></textarea>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label for="status">Estado</label>
+                  <select id="status" class="select">
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Preview</label>
+                  <div class="card" style="padding:10px;">
+                    <img id="preview" alt="Preview producto" style="border-radius:12px; border:1px solid var(--line); max-width:100%;" />
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn primary" type="submit">Guardar</button>
+                <button id="btnReset" class="btn" type="button">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./assets/js/admin.products.js"></script>
+</body>
+</html>

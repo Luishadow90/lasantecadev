@@ -1,19 +1,26 @@
-/* assets/js/jobs.demo.js */
+/* assets/js/jobs.demo.js (optimizado y alineado)
+   - Frontend: renderiza vacantes en trabaja.html
+   - Lee desde window.LaSanteStore.getJobs() (si existe) o desde localStorage
+   - Guarda postulaciones en localStorage 'lasante_applications_v1'
+*/
 (function () {
   const $ = (sel, root = document) => root.querySelector(sel);
-
   const elGrid = $("#jobs-grid");
   const elQ = $("#jobs-q");
   const elLocation = $("#jobs-location");
   const elArea = $("#jobs-area");
 
-  // Modal elements
+  // Modal elements (pueden no existir si se carga en otra página)
   const modal = $("#applyModal");
   const applyForm = $("#applyForm");
   const applyOk = $("#applyOk");
   const applySubtitle = $("#applySubtitle");
   const jobIdInput = $("#jobId");
 
+  const LS_JOBS = "lasante_jobs_v1";
+  const LS_APPS = "lasante_applications_v1";
+
+  // Seed demo (si no existe LaSanteStore, usamos localStorage)
   const seedJobs = [
     {
       id: "job_qfb_gt",
@@ -105,9 +112,29 @@
     },
   ];
 
+  function safeParse(raw, fallback) {
+    try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
+  }
+
+  function readJobsLocal() {
+    // Preferir LaSanteStore si existe (consistencia con Admin)
+    if (window.LaSanteStore && typeof window.LaSanteStore.getJobs === "function") {
+      return window.LaSanteStore.getJobs() || [];
+    }
+    return safeParse(localStorage.getItem(LS_JOBS), []);
+  }
+
+  function writeJobsLocal(list) {
+    if (window.LaSanteStore && typeof window.LaSanteStore.setJobs === "function") {
+      window.LaSanteStore.setJobs(list);
+      return;
+    }
+    localStorage.setItem(LS_JOBS, JSON.stringify(list));
+  }
+
   function ensureSeed() {
-    const existing = window.LaSanteStore.getJobs();
-    if (!existing || existing.length === 0) window.LaSanteStore.setJobs(seedJobs);
+    const existing = readJobsLocal();
+    if (!existing || existing.length === 0) writeJobsLocal(seedJobs);
   }
 
   function uniq(list) {
@@ -119,7 +146,7 @@
   }
 
   function escapeHtml(s) {
-    return String(s)
+    return String(s || "")
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -128,6 +155,7 @@
   }
 
   function renderFilters(jobs) {
+    if (!elLocation || !elArea) return;
     const locations = uniq(jobs.map((j) => j.location));
     const areas = uniq(jobs.map((j) => j.area));
 
@@ -148,14 +176,14 @@
     const off = (job.offer || []).slice(0, 4).map((r) => `<li>${escapeHtml(r)}</li>`).join("");
 
     return `
-      <article class="card job-card">
+      <article class="card job-card" data-id="${escapeHtml(job.id)}">
         <div class="p">
-          <div class="job-card__top">
-            <div>
+          <div class="job-card__top" style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+            <div style="flex:1;">
               <h3 class="m0">${escapeHtml(job.title)}</h3>
               <div class="muted mt-1">${badge(job.location)} ${badge(job.type)} ${badge(job.area)}</div>
             </div>
-            <div class="job-card__actions">
+            <div class="job-card__actions" style="display:flex; gap:8px; align-items:center;">
               <button class="btn ghost" type="button" data-job-toggle="${escapeHtml(job.id)}">Ver detalle</button>
               <button class="btn primary" type="button" data-job-apply="${escapeHtml(job.id)}">Aplicar →</button>
             </div>
@@ -184,15 +212,16 @@
   }
 
   function render() {
-    const jobs = window.LaSanteStore.getJobs();
-    const q = (elQ.value || "").trim().toLowerCase();
-    const location = elLocation.value || "";
-    const area = elArea.value || "";
+    if (!elGrid) return;
+    const jobs = readJobsLocal();
+    const qv = (elQ?.value || "").trim().toLowerCase();
+    const loc = elLocation?.value || "";
+    const area = elArea?.value || "";
 
-    const filtered = jobs.filter((j) => matches(j, q, location, area));
+    const filtered = jobs.filter((j) => matches(j, qv, loc, area));
     elGrid.innerHTML = filtered.map(jobCard).join("");
 
-    // bind
+    // bind toggle details
     elGrid.querySelectorAll("[data-job-toggle]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-job-toggle");
@@ -203,42 +232,44 @@
       });
     });
 
+    // bind apply buttons
     elGrid.querySelectorAll("[data-job-apply]").forEach((btn) => {
       btn.addEventListener("click", () => openApply(btn.getAttribute("data-job-apply")));
     });
   }
 
   function openApply(jobId) {
-    const jobs = window.LaSanteStore.getJobs();
+    if (!modal || !applyForm) return;
+    const jobs = readJobsLocal();
     const job = jobs.find((j) => j.id === jobId);
     if (!job) return;
 
-    jobIdInput.value = job.id;
-    applySubtitle.textContent = `${job.title} — ${job.location} · ${job.type}`;
-    applyOk.hidden = true;
+    if (jobIdInput) jobIdInput.value = job.id;
+    if (applySubtitle) applySubtitle.textContent = `${job.title} — ${job.location} · ${job.type}`;
+    if (applyOk) applyOk.hidden = true;
     applyForm.reset();
-    jobIdInput.value = job.id;
-
     openModal(modal);
   }
 
   function openModal(m) {
+    if (!m) return;
     m.setAttribute("aria-hidden", "false");
     m.classList.add("is-open");
     document.documentElement.classList.add("no-scroll");
   }
 
   function closeModal(m) {
+    if (!m) return;
     m.setAttribute("aria-hidden", "true");
     m.classList.remove("is-open");
     document.documentElement.classList.remove("no-scroll");
   }
 
   function bindModal() {
+    if (!document) return;
     document.addEventListener("click", (e) => {
       const target = e.target;
       if (!(target instanceof HTMLElement)) return;
-
       if (target.matches("[data-close-modal]")) {
         const m = target.closest(".modal");
         if (m) closeModal(m);
@@ -250,39 +281,41 @@
       document.querySelectorAll(".modal.is-open").forEach((m) => closeModal(m));
     });
 
+    if (!applyForm) return;
     applyForm.addEventListener("submit", (e) => {
       e.preventDefault();
-
-      const file = $("#cvFile").files && $("#cvFile").files[0] ? $("#cvFile").files[0].name : "";
+      const file = $("#cvFile") && $("#cvFile").files && $("#cvFile").files[0] ? $("#cvFile").files[0].name : "";
       const payload = {
-        jobId: $("#jobId").value,
-        fullName: $("#fullName").value.trim(),
-        email: $("#email").value.trim(),
-        phone: $("#phone").value.trim(),
-        country: $("#country").value.trim(),
-        linkedin: $("#linkedin").value.trim(),
-        message: $("#message").value.trim(),
+        jobId: $("#jobId") ? $("#jobId").value : "",
+        fullName: $("#fullName") ? $("#fullName").value.trim() : "",
+        email: $("#email") ? $("#email").value.trim() : "",
+        phone: $("#phone") ? $("#phone").value.trim() : "",
+        country: $("#country") ? $("#country").value.trim() : "",
+        linkedin: $("#linkedin") ? $("#linkedin").value.trim() : "",
+        message: $("#message") ? $("#message").value.trim() : "",
         cvFileName: file,
+        sentAt: new Date().toISOString()
       };
 
-      window.LaSanteStore.addApplication(payload);
-      applyOk.hidden = false;
+      const list = safeParse(localStorage.getItem(LS_APPS), []);
+      list.push(payload);
+      localStorage.setItem(LS_APPS, JSON.stringify(list));
 
-      // UX: cerrar después de 1.2s (demo)
-      setTimeout(() => {
-        closeModal(modal);
-      }, 1200);
+      if (applyOk) applyOk.hidden = false;
+      setTimeout(() => closeModal(modal), 1200);
     });
   }
 
   function bindFilters() {
-    [elQ, elLocation, elArea].forEach((el) => el.addEventListener("input", render));
-    [elLocation, elArea].forEach((el) => el.addEventListener("change", render));
+    if (elQ) elQ.addEventListener("input", render);
+    if (elLocation) elLocation.addEventListener("change", render);
+    if (elArea) elArea.addEventListener("change", render);
   }
 
   // init
   ensureSeed();
-  renderFilters(window.LaSanteStore.getJobs());
+  const jobs = readJobsLocal();
+  renderFilters(jobs);
   bindFilters();
   bindModal();
   render();
